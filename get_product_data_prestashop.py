@@ -6,6 +6,22 @@ from bs4 import BeautifulSoup
 from check_cms import *
 from enregistrement import *
 
+
+#---------------------------------------------------------------------------------
+#on cherche l'URL de l'image
+def give_PrestashopProductImgURL(bsObj):
+
+#La boite a bougies
+	image=bsObj.find("img", {"id":"bigpic"})
+	if image != None:
+		#print "Cas 1 image"
+		imgUrlSrc = image['src']
+		return imgUrlSrc
+				
+
+	return ""
+
+
 #---------------------------------------------------------------------------------
 #on cherche le nom du produit 
 def give_PrestashopProductName(bsObj, produit):
@@ -100,6 +116,25 @@ def check_PrestashopProductPrice(bsObj):
 		if prix != None:	
 			prixTxt = prix.get_text()
 
+
+	#prix soldé	
+	ps=bsObj.find("p", {"id":"old_price"})
+	
+	if ps != None:
+		old_prix = ps.find("span", {"class":"price"})
+		if old_prix != None:
+			old_prixValueTxt = old_prix.get_text()
+			#print old_prixValueTxt
+			
+			#On a un ancien prix et un prix affiché
+			#Le prix affiché est alors le prix soldé
+			#et l'ancien prix le prix d'origine
+			if prix != None:
+				#Le prix soldé est le prix affiché
+				special_prixValueTxt = prixTxt	
+				#l"ancien prix est le prix
+				
+
 	return(prixTxt, old_prixValueTxt, special_prixValueTxt)
 
 		
@@ -125,4 +160,8 @@ def get_PrestaShopProduct(bsObj):
 			if prix != None: 
 				print prix
 				produit_actif.add_PrixProduit(prix, old_price, special_price)
+				imgUrlSrc = give_PrestashopProductImgURL(bsObj)
+				if imgUrlSrc != "":
+					#print imgUrlSrc
+					produit_actif.add_UrlImageProduit(imgUrlSrc)
 				
