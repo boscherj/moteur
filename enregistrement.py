@@ -10,7 +10,7 @@ import re
 def convert_string_to_float(s):
 
 	z = 0
-	if s!= None:
+	if s!= None and s != "":
 		s=s.replace(",",".")
 		x=re.findall("\d+[\.?|\,?]\d+",s)
 		y=x[0]
@@ -30,8 +30,14 @@ def initBDD():
 def storeProduitActif(wcapi, categorie):
 	#Dictionaries are created using the curly braces. 
 	produit_actif.prix_ancien_produit = max(produit_actif.prix_produit, produit_actif.prix_ancien_produit)
+	
+	
 	if produit_actif.prix_special_produit == 0:
 		produit_actif.prix_special_produit = None
+	#ce n'est pas soldé dans ce cas
+	if produit_actif.prix_special_produit == produit_actif.prix_ancien_produit:
+		produit_actif.prix_special_produit = None	
+		
 			
 	data = {}
 	data = {
@@ -59,7 +65,7 @@ def storeProduitActif(wcapi, categorie):
 				if produit_actif.url_image_produit != "":
 		
 					print data
-					return(wcapi.post("products", data).json())
+					#return(wcapi.post("products", data).json())
 
 
 class Produit:

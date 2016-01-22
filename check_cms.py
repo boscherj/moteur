@@ -39,6 +39,8 @@ def est_ce_une_bougie(item):
 #Prestashop 
 #La Boite à Bougies : 42 
 #Bougiz : 43
+#Historiae : 44
+#Geodesis : 45
 
 #fonction qui retourne le CMS de la page etudiée pour les sites connus
 #parmi Magento Prestashop Woocommerce Drupal
@@ -66,12 +68,14 @@ def check_cms(pageUrl):
 	
 	#La Boite à Bougies : 4, 2, 42
 	#Bougiz : 11, 2, 43
+	#Historiae : 7, 2, 44
+	#Geodesis : 12, 2, 45
 	
 	domain_liste = ["www.durance.fr", "www.esteban.fr", "lalumieredesfees.fr","www.bougies-parfums.fr","www.laboiteabougies.fr", "www.synopsisparis.com", "www.desfillesalavanille.com", "www.historiae.fr", "www.scandles.fr", "www.jewelcandle.fr", "www.kerzon.fr", 
 	"www.bougiz.fr", "www.geodesis.com", "decobiance.pswebshop.com", "www.diptyqueparis.fr", "www.ambiancedelamaison.fr", "www.emoi-emoi.com",
 	"www.lebonmarche.com", "www.sia-homefashion.fr", "www.decosdumonde.com", "www.comptoir-de-famille.com"]
 	cms_liste = [1, 1, 4, 1, 2, 1, 1, 2, 3, 3, 3, 2, 2, 2, 5, 2, 1, 6, 1, 1, 1]
-	categorie_liste = [32, 34, 4, 36, 42, 39, 1, 2, 3, 3, 3, 43, 2, 2, 37, 2, 1, 41, 1, 40, 38]
+	categorie_liste = [32, 34, 4, 36, 42, 39, 1, 44, 3, 3, 3, 43, 45, 2, 37, 2, 1, 41, 1, 40, 38]
 
 	parsed_uri = urlparse(pageUrl)	
 	check_in_list = parsed_uri.netloc in domain_liste

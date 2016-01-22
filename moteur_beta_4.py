@@ -11,12 +11,13 @@ pages = set()
 #Le type du domaine (CMS et autres infos)
 global domain_type
 
-url_etudiee = "http://www.bougiz.fr/"
+url_etudiee = "http://www.geodesis.com/fr/17-bougies-parfumees-"
 
 #on cherche le CMS du domain
 cms, categorie = check_cms(url_etudiee)
 
 #on parcourt tous les liens
-url_format = "www.bougiz.fr"
+url_format = "geodesis.com\/fr\/bougies-parfumees-"
+
 
 getLinksInit(url_etudiee, cms, url_format, categorie)
