@@ -27,6 +27,7 @@ def est_ce_une_bougie(item):
 #Comptoir-de-famille : 38
 #Synopsis Paris : 39
 #Decos du Monde : 40
+#Le Bon Marche : 41
 
 
 #fonction qui retourne le CMS de la page etudiée pour les sites connus
@@ -50,12 +51,13 @@ def check_cms(pageUrl):
 	#Comptoir de famille : 20, 1, 38
 	#Synopsis Paris : 5, 1, 39
 	#Decos du Monde : 19, 1, 40
+	#Le Bon Marche : 17, 1, 41
 	
 	domain_liste = ["www.durance.fr", "www.esteban.fr", "lalumieredesfees.fr","www.bougies-parfums.fr","www.laboiteabougies.fr", "www.synopsisparis.com", "www.desfillesalavanille.com", "www.historiae.fr", "www.scandles.fr", "www.jewelcandle.fr", "www.kerzon.fr", 
 	"www.bougiz.fr", "www.geodesis.com", "decobiance.pswebshop.com", "www.diptyqueparis.fr", "www.ambiancedelamaison.fr", "www.emoi-emoi.com",
 	"www.lebonmarche.com", "www.sia-homefashion.fr", "www.decosdumonde.com", "www.comptoir-de-famille.com"]
 	cms_liste = [1, 1, 4, 1, 2, 1, 1, 2, 3, 3, 3, 2, 2, 2, 5, 2, 1, 6, 1, 1, 1]
-	categorie_liste = [32, 34, 4, 36, 2, 39, 1, 2, 3, 3, 3, 2, 2, 2, 37, 2, 1, 6, 1, 40, 38]
+	categorie_liste = [32, 34, 4, 36, 2, 39, 1, 2, 3, 3, 3, 2, 2, 2, 37, 2, 1, 41, 1, 40, 38]
 
 	parsed_uri = urlparse(pageUrl)	
 	check_in_list = parsed_uri.netloc in domain_liste

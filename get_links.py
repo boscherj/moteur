@@ -31,6 +31,7 @@ def getLinksInit(pageUrl, cms, pageUrlFormat, categorie):
 def getLinks(pageUrl, wcapi, categorie):
 	global pages
 	
+	print "..."
 	print pageUrl	
 			
 	html = requests.get(pageUrl) 
