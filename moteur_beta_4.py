@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# sous Git
 
 import requests
 import re
