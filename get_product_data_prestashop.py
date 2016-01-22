@@ -99,6 +99,28 @@ def check_est_une_bougie_PrestaShop(bsObj):
 
 #---------------------------------------------------------------------------------
 #cherche le prix d'un produit Prestashop
+def check_PrestashopProductPriceSolde(bsObj):
+
+	old_prix = None
+	#prix soldé	
+	ps=bsObj.find("p", {"id":"old_price"})
+
+	if ps != None:
+	
+		#www.laboiteabougies.fr
+		old_prix = ps.find("span", {"class":"price"})
+		if old_prix != None:
+			return old_prix
+		
+		#Bougiz		
+		old_prix = ps.find("span", {"id":"old_price_display"})
+		if old_prix != None:
+			return old_prix
+
+	return old_prix
+		
+#---------------------------------------------------------------------------------
+#cherche le prix d'un produit Prestashop
 def check_PrestashopProductPrice(bsObj):
 
 	prixTxt = None
@@ -118,23 +140,20 @@ def check_PrestashopProductPrice(bsObj):
 
 
 	#prix soldé	
-	ps=bsObj.find("p", {"id":"old_price"})
-	
-	if ps != None:
-		old_prix = ps.find("span", {"class":"price"})
-		if old_prix != None:
-			old_prixValueTxt = old_prix.get_text()
-			#print old_prixValueTxt
+	old_prix = check_PrestashopProductPriceSolde(bsObj)
+	if old_prix != None:
+		old_prixValueTxt = old_prix.get_text()
+		#print old_prixValueTxt
 			
-			#On a un ancien prix et un prix affiché
-			#Le prix affiché est alors le prix soldé
-			#et l'ancien prix le prix d'origine
-			if prix != None:
-				#Le prix soldé est le prix affiché
-				special_prixValueTxt = prixTxt	
-				#l"ancien prix est le prix
+		#On a un ancien prix et un prix affiché
+		#Le prix affiché est alors le prix soldé
+		#et l'ancien prix le prix d'origine
+		if prix != None:
+			#Le prix soldé est le prix affiché
+			special_prixValueTxt = prixTxt	
+			#l"ancien prix est le prix
 				
-
+				
 	return(prixTxt, old_prixValueTxt, special_prixValueTxt)
 
 		
@@ -144,7 +163,6 @@ def check_PrestashopProductPrice(bsObj):
 #---------------------------------------------------------------------------------	
 def get_PrestaShopProduct(bsObj):
 
-	print "PrestaShop"	
 	produit = check_PrestahopIsItAproduct(bsObj)			
 	if produit != None: 
 	
