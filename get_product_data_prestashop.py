@@ -94,7 +94,29 @@ def check_est_une_bougie_PrestaShop(bsObj):
 			check = True
 			return check
 
-			
+	#Papillon Rouge
+	nom = bsObj.find("h1")	
+	if nom != None:
+		nom_produit = nom.get_text()
+		print "4eme cas"
+		print nom_produit
+		if est_ce_une_bougie(nom_produit):
+			check = True
+			return check
+	
+	#Papillon Rouge B
+	nom = bsObj.find("div", {"class":"breadcrumb_inner"})
+	if nom != None:
+		y_url = nom.find_all("a")[-1]
+		print "4eme cas B"
+		if y_url != None:
+			nom_produit = y_url["title"]
+			if est_ce_une_bougie(nom_produit):
+				check = True
+				print "OK Bougie"
+				return check
+	
+					
 	return check
 
 #---------------------------------------------------------------------------------
