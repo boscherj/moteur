@@ -59,7 +59,7 @@ def storeProduitActif(wcapi, categorie):
 				if produit_actif.url_image_produit != "":
 		
 					print data
-					return(wcapi.post("products", data).json())
+					#return(wcapi.post("products", data).json())
 
 
 class Produit:

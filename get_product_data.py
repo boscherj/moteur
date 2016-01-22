@@ -4,6 +4,8 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from check_cms import *from get_product_data_magento import *
+from get_product_data_prestashop import *
+
 #Pour rappel : #Magento 1
 #PrestaShop 2
 #WooCommerce 3
@@ -252,50 +254,7 @@ def get_JoomlaProduct(bsObj):
 			if prix != None:
 				print (prix)
 	
-#---------------------------------------------------------------------------------	
-def get_PrestaShopProduct(bsObj):
-	print "PrestaShop"
-	
-	#plusieurs possibilites pour savoir si la page est un produit
-	isPageProduit1=bsObj.find("body", {"id":"product"})
-	isPageProduit2= bsObj.find("div", {"class":"product_attributes"})
-	if isPageProduit1!= None: 
-		print "produit"
-		isPageProduit = isPageProduit1
-	else:
-		if isPageProduit2!= None: 	
-			print "produit"
-			isPageProduit = isPageProduit2
-		else:
-			print "Pas un produit"
-			isPageProduit = None		
-			
-	#page produit
-	if isPageProduit != None: 
-	
-		if check_est_une_bougie_PrestaShop(bsObj):
-			produit = bsObj.find("title")
-			nom_produit = produit.get_text()
-			print nom_produit	
-			print "On cherche le prix"	
-			#span
-			#1er cas
-			prix = bsObj.find("span", {"class":"our_price_display"})
-			if prix == None:
-				#2eme cas
-				prix = bsObj.find("p", {"class":"our_price_display"})
-				if prix != None:	
-					prix_produit = prix.get_text()
-					print prix_produit
-				else:
-					print "Pas de prix"
-			else:
-				prix_produit = prix.get_text()
-				print prix_produit			
-		#pas une bougie
-		else:
-			print "Pas une bougie"
-	
+#---------------------------------------------------------------------------------
 	
 def getproductData(bsObj, cms):	if cms==1:	
 		#Magento

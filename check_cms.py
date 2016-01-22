@@ -20,6 +20,9 @@ def est_ce_une_bougie(item):
 	return False
 
 
+# ----------------------------------------------------
+
+#Magento 
 #Durance : 32
 #Esteban : 34
 #Scandles : 33
@@ -30,6 +33,12 @@ def est_ce_une_bougie(item):
 #Le Bon Marche : 41
 
 
+# ----------------------------------------------------
+
+#Prestashop 
+#La Boite à Bougies : 42 
+
+
 #fonction qui retourne le CMS de la page etudiée pour les sites connus
 #parmi Magento Prestashop Woocommerce Drupal
 #Magento 1
@@ -38,6 +47,7 @@ def est_ce_une_bougie(item):
 #Joomla 4
 #Magento Diptyque 5
 #Magento Open Graph 6 lebonmarche
+
 
 
 def check_cms(pageUrl):
@@ -53,11 +63,13 @@ def check_cms(pageUrl):
 	#Decos du Monde : 19, 1, 40
 	#Le Bon Marche : 17, 1, 41
 	
+	#La Boite à Bougies : 4, 2, 42
+	
 	domain_liste = ["www.durance.fr", "www.esteban.fr", "lalumieredesfees.fr","www.bougies-parfums.fr","www.laboiteabougies.fr", "www.synopsisparis.com", "www.desfillesalavanille.com", "www.historiae.fr", "www.scandles.fr", "www.jewelcandle.fr", "www.kerzon.fr", 
 	"www.bougiz.fr", "www.geodesis.com", "decobiance.pswebshop.com", "www.diptyqueparis.fr", "www.ambiancedelamaison.fr", "www.emoi-emoi.com",
 	"www.lebonmarche.com", "www.sia-homefashion.fr", "www.decosdumonde.com", "www.comptoir-de-famille.com"]
 	cms_liste = [1, 1, 4, 1, 2, 1, 1, 2, 3, 3, 3, 2, 2, 2, 5, 2, 1, 6, 1, 1, 1]
-	categorie_liste = [32, 34, 4, 36, 2, 39, 1, 2, 3, 3, 3, 2, 2, 2, 37, 2, 1, 41, 1, 40, 38]
+	categorie_liste = [32, 34, 4, 36, 42, 39, 1, 2, 3, 3, 3, 2, 2, 2, 37, 2, 1, 41, 1, 40, 38]
 
 	parsed_uri = urlparse(pageUrl)	
 	check_in_list = parsed_uri.netloc in domain_liste
@@ -111,49 +123,6 @@ def check_est_une_bougie_woocommerce(bsObj):
 	return check
 	
 	
-#----------------------------------------------------------------------------------------------
-#fonction qui verifie que la page produit  CMS PrestaShop - Woocommerce est celle d une bougie	
-def check_est_une_bougie_PrestaShop(bsObj):
-	
-	check = False
-	print "check_est_une_bougie_PrestaShop"
-	#produit = bsObj.find("title")
-	#nom_produit = produit.get_text()
-	#if nom_produit.lower().find('bougie') >= 0:
-		#print nom_produit	
-		#check = True				
-	nom = bsObj.find("h1", {"itemprop":"name"})
-	if nom != None:
-		nom_produit = nom.get_text()
-		print "1er cas"
-		print nom_produit
-		if est_ce_une_bougie(nom_produit):
-			check = True
-			return check
-
-	nom = bsObj.find("h1", {"class":"supplier_title"})	
-	if nom != None:
-		nom_produit = nom.get_text()
-		print "2eme cas"
-		print nom_produit
-		if est_ce_une_bougie(nom_produit):
-			check = True
-			return check
-	
-	
-	nom = bsObj.find("h1", {"class":"productTitle"})	
-	if nom != None:
-		nom_produit = nom.get_text()
-		print "3eme cas"
-		print nom_produit
-		if est_ce_une_bougie(nom_produit):
-			check = True
-			return check
-
-			
-	return check
-
-
 
 #----------------------------------------------------------------------------------------------
 #fonction qui verifie que la page produit  CMS Magento

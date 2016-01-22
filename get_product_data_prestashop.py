@@ -7,6 +7,37 @@ from check_cms import *
 from enregistrement import *
 
 #---------------------------------------------------------------------------------
+#on cherche le nom du produit 
+def give_PrestashopProductName(bsObj, produit):
+
+	produit_title = bsObj.find("title")
+	if produit_title != None:
+		nom_produit = produit_title.get_text()
+		#print nom_produit
+		if  check_est_une_bougie_PrestaShop(bsObj):
+			return(nom_produit)
+		
+	return ""
+					
+#---------------------------------------------------------------------------------
+#on vérifie que c'est bien un produit Prestahop
+def check_PrestahopIsItAproduct(bsObj):
+
+	#plusieurs possibilites pour savoir si la page est un produit
+	#cas 1
+	produit=bsObj.find("body", {"id":"product"})
+	if produit!= None: 
+		print "produit"
+		return produit
+		
+	#cas 2	
+	produit= bsObj.find("div", {"class":"product_attributes"})
+	if produit!= None: 
+		print "produit"
+		return produit
+
+	#ce n'est pas un produit
+	return produit	
 
 #----------------------------------------------------------------------------------------------
 #fonction qui verifie que la page produit  CMS PrestaShop - Woocommerce est celle d une bougie	
@@ -50,47 +81,48 @@ def check_est_une_bougie_PrestaShop(bsObj):
 			
 	return check
 
+#---------------------------------------------------------------------------------
+#cherche le prix d'un produit Prestashop
+def check_PrestashopProductPrice(bsObj):
 
+	prixTxt = None
+	old_prixValueTxt = None
+	special_prixValueTxt = None
+	
+
+	#1er cas
+	prix = bsObj.find("span", {"class":"our_price_display"})
+	if prix != None:
+		prixTxt = prix.get_text()
+	
+	else:
+		prix = bsObj.find("p", {"class":"our_price_display"})
+		if prix != None:	
+			prixTxt = prix.get_text()
+
+	return(prixTxt, old_prixValueTxt, special_prixValueTxt)
+
+		
+		
+		
+		
 #---------------------------------------------------------------------------------	
 def get_PrestaShopProduct(bsObj):
-	print "PrestaShop"
+
+	print "PrestaShop"	
+	produit = check_PrestahopIsItAproduct(bsObj)			
+	if produit != None: 
 	
-	#plusieurs possibilites pour savoir si la page est un produit
-	isPageProduit1=bsObj.find("body", {"id":"product"})
-	isPageProduit2= bsObj.find("div", {"class":"product_attributes"})
-	if isPageProduit1!= None: 
-		print "produit"
-		isPageProduit = isPageProduit1
-	else:
-		if isPageProduit2!= None: 	
-			print "produit"
-			isPageProduit = isPageProduit2
-		else:
-			print "Pas un produit"
-			isPageProduit = None		
+		#on teste si c'est une bougie
+		nom_produit = give_PrestashopProductName(bsObj, produit)
+		if nom_produit != "":
+			produit_actif.add_NomProduit(nom_produit)
 			
-	#page produit
-	if isPageProduit != None: 
-	
-		if check_est_une_bougie_PrestaShop(bsObj):
-			produit = bsObj.find("title")
-			nom_produit = produit.get_text()
 			print nom_produit	
 			print "On cherche le prix"	
-			#span
-			#1er cas
-			prix = bsObj.find("span", {"class":"our_price_display"})
-			if prix == None:
-				#2eme cas
-				prix = bsObj.find("p", {"class":"our_price_display"})
-				if prix != None:	
-					prix_produit = prix.get_text()
-					print prix_produit
-				else:
-					print "Pas de prix"
-			else:
-				prix_produit = prix.get_text()
-				print prix_produit			
-		#pas une bougie
-		else:
-			print "Pas une bougie"
+			prix, old_price, special_price = check_PrestashopProductPrice(bsObj)
+			
+			if prix != None: 
+				print prix
+				produit_actif.add_PrixProduit(prix, old_price, special_price)
+				
