@@ -15,6 +15,8 @@ pages = set()
 def getLinksInit(pageUrl, cms, pageUrlFormat, categorie):
 	global global_regexes
 	global global_cms
+	global global_netloc
+	global global_scheme
 		
 	global_regexes = re.compile(pageUrlFormat)
 	global_cms = cms
@@ -22,6 +24,11 @@ def getLinksInit(pageUrl, cms, pageUrlFormat, categorie):
 	
 	wcapi = initBDD()	
 	#init_Global()
+	
+	parsed_url = urlparse(pageUrl)
+	global_netloc = parsed_url.netloc
+	global_scheme = parsed_url.scheme
+			
 	getLinks(pageUrl, wcapi, categorie)
 
 
@@ -55,6 +62,12 @@ def getLinks(pageUrl, wcapi, categorie):
 			#We have encountered a new page
 				newPage = link.attrs['href'] 
 				pages.add(newPage) 
+				
+				#Pour la lumiere des fées car les URL ne sont pas complètes
+				parsed_url = urlparse(newPage)
+				if parsed_url.netloc == "":
+					newPage = global_scheme + "://" + global_netloc + newPage	
+					print newPage
 				
 				#on verifie que les mots interdits ne sont pas presents dans l url
 				if url_accepted(newPage): 

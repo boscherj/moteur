@@ -8,7 +8,7 @@ pages = set()
 
 #fonction qui teste si une chaine de caracteres peut etre consideree comme une bougie
 def est_ce_une_bougie(item):
-	marques_et_mots = ["rigaud","baobab","nimbus"]
+	marques_et_mots = ["rigaud","baobab","nimbus", "bahoma"]
 	
 	if item.lower().find('bougie') >= 0:
 		return True
@@ -32,6 +32,8 @@ def est_ce_une_bougie(item):
 #Decos du Monde : 40
 #Le Bon Marche : 41
 
+#Joomla
+#La Lumiere Des Fées : 48
 
 
 # ----------------------------------------------------
@@ -42,6 +44,7 @@ def est_ce_une_bougie(item):
 #Historiae : 44
 #Geodesis : 45
 #Papillon Rouge : 46
+#Balamata : 47 
 
 #fonction qui retourne le CMS de la page etudiée pour les sites connus
 #parmi Magento Prestashop Woocommerce Drupal
@@ -71,13 +74,19 @@ def check_cms(pageUrl):
 	#Bougiz : 11, 2, 43
 	#Historiae : 7, 2, 44
 	#Geodesis : 12, 2, 45
-	#Papillon Rouge : 46
+	#Papillon Rouge : 21, 2, 46
+	#Balamata : 22, 2, 47 
+	
+	#Scandles : 8, 3, 33
+	
+	#La Lumiere Des Fées : 2, 4, 48
 	
 	domain_liste = ["www.durance.fr", "www.esteban.fr", "lalumieredesfees.fr","www.bougies-parfums.fr","www.laboiteabougies.fr", "www.synopsisparis.com", "www.desfillesalavanille.com", "www.historiae.fr", "www.scandles.fr", "www.jewelcandle.fr", "www.kerzon.fr", 
-	"www.bougiz.fr", "www.geodesis.com", "decobiance.pswebshop.com", "www.diptyqueparis.fr", "www.ambiancedelamaison.fr", "www.emoi-emoi.com",
-	"www.lebonmarche.com", "www.sia-homefashion.fr", "www.decosdumonde.com", "www.comptoir-de-famille.com", "papillonrougeparis.com"]
-	cms_liste = [1, 1, 4, 1, 2, 1, 1, 2, 3, 3, 3, 2, 2, 2, 5, 2, 1, 6, 1, 1, 1, 2]
-	categorie_liste = [32, 34, 4, 36, 42, 39, 1, 44, 3, 3, 3, 43, 45, 2, 37, 2, 1, 41, 1, 40, 38, 46]
+	"www.bougiz.fr", "www.geodesis.com", "decobiance.pswebshop.com", "www.diptyqueparis.fr", "www.ambiancedelamaison.fr", "www.emoi-emoi.com", 
+	"www.lebonmarche.com", "www.sia-homefashion.fr", "www.decosdumonde.com", "www.comptoir-de-famille.com", "papillonrougeparis.com", 
+	"www.balamata.fr"]
+	cms_liste = [1, 1, 4, 1, 2, 1, 1, 2, 3, 3, 3, 2, 2, 2, 5, 2, 1, 6, 1, 1, 1, 2, 2]
+	categorie_liste = [32, 34, 4, 36, 42, 39, 1, 44, 33, 3, 3, 43, 45, 2, 37, 2, 1, 41, 1, 40, 38, 46, 47]
 
 	parsed_uri = urlparse(pageUrl)	
 	check_in_list = parsed_uri.netloc in domain_liste

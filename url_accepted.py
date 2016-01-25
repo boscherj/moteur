@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
+from urlparse import urlparse
+
 
 regexes2 = [ re.compile(p) for p in [ 'mailto',
 									'image',
@@ -85,9 +87,10 @@ def url_accepted(Page):
 #on verifie que les mots interdits ne sont pas presents dans l url
 
 	accepte_url = 1
+	
 	for regex2 in regexes2:
 		if regex2.search(Page):
 			accepte_url = 0
-			break
+			return accepte_url
 		
 	return accepte_url			
