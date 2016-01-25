@@ -11,6 +11,13 @@ from enregistrement import *
 #on cherche l'URL de l'image
 def give_PrestashopProductImgURL(bsObj):
 
+#Papillon Rouge
+#image=bsObj.find("div", {"id":"image-block"})
+#if image != None:
+#imgUrlSrc = image.img['src']	
+#if imgUrlSrc != None:
+#return imgUrlSrc
+
 #La boite a bougies
 	image=bsObj.find("img", {"id":"bigpic"})
 	if image != None:
@@ -105,6 +112,7 @@ def check_est_une_bougie_PrestaShop(bsObj):
 			return check
 	
 	#Papillon Rouge B
+	#A REVOIR
 	nom = bsObj.find("div", {"class":"breadcrumb_inner"})
 	if nom != None:
 		y_url = nom.find_all("a")[-1]
