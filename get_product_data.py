@@ -5,6 +5,7 @@ import re
 from bs4 import BeautifulSoup
 from check_cms import *from get_product_data_magento import *
 from get_product_data_prestashop import *
+from get_product_data_joomla import *
 
 #Pour rappel : #Magento 1
 #PrestaShop 2
@@ -239,9 +240,9 @@ def ex_get_MagentoProduct(bsObj):
 								
 #---------------------------------------------------------------------------------
 #La lumiere des fees
-def get_JoomlaProduct(bsObj):
+def ex_get_JoomlaProduct(bsObj):
 	
-	print "Joomla"
+	#print "Joomla"
 	produit = bsObj.find("div", {"id":"hikashop_product_right_part"})
 	if produit != None: 
 		titre = bsObj.find("title")

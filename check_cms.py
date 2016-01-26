@@ -86,7 +86,7 @@ def check_cms(pageUrl):
 	"www.lebonmarche.com", "www.sia-homefashion.fr", "www.decosdumonde.com", "www.comptoir-de-famille.com", "papillonrougeparis.com", 
 	"www.balamata.fr"]
 	cms_liste = [1, 1, 4, 1, 2, 1, 1, 2, 3, 3, 3, 2, 2, 2, 5, 2, 1, 6, 1, 1, 1, 2, 2]
-	categorie_liste = [32, 34, 4, 36, 42, 39, 1, 44, 33, 3, 3, 43, 45, 2, 37, 2, 1, 41, 1, 40, 38, 46, 47]
+	categorie_liste = [32, 34, 48, 36, 42, 39, 1, 44, 33, 3, 3, 43, 45, 2, 37, 2, 1, 41, 1, 40, 38, 46, 47]
 
 	parsed_uri = urlparse(pageUrl)	
 	check_in_list = parsed_uri.netloc in domain_liste

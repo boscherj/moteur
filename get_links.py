@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import requests
 import re
 from bs4 import BeautifulSoup
@@ -47,7 +49,6 @@ def getLinks(pageUrl, wcapi, categorie):
 	bsObj = BeautifulSoup(data)	
 	
 	getproductData(bsObj, global_cms)
-	
 	produit_actif.add_UrlProduit(pageUrl)
 	#produit_actif.printProduit()
 	storeProduitActif(wcapi, categorie)
@@ -63,11 +64,11 @@ def getLinks(pageUrl, wcapi, categorie):
 				newPage = link.attrs['href'] 
 				pages.add(newPage) 
 				
-				#Pour la lumiere des fées car les URL ne sont pas complètes
+				#Pour la lumiere des fees car les URL ne sont pas completes
 				parsed_url = urlparse(newPage)
 				if parsed_url.netloc == "":
 					newPage = global_scheme + "://" + global_netloc + newPage	
-					print newPage
+					#print newPage
 				
 				#on verifie que les mots interdits ne sont pas presents dans l url
 				if url_accepted(newPage): 

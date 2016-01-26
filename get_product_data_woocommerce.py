@@ -6,9 +6,10 @@ from bs4 import BeautifulSoup
 from check_cms import *
 from enregistrement import *
 
+#ATTENTION DEUX FOIS LE MEME NOM POUR UNE FONCTION A CORRIGER
 #----------------------------------------------------------------------------------------------
 #fonction qui verifie que la page produit Woocommerce est celle d une bougie	
-def give_WoocommerceWordpressProductName(bsObj):
+def ex_give_WoocommerceWordpressProductName(bsObj):
 	
 	check = False
 	print "check_est_une_bougie_Woocommerce"
