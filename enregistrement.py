@@ -21,9 +21,16 @@ def convert_string_to_float(s):
 
 def initBDD():
 	wcapi = API(
-	url="http://localhost:8888/bs4",
-	consumer_key="ck_6d2694abe7dfcfa2326c8d0f6153ed078a5923fb",
-	consumer_secret="cs_8afd0317af477c088784b28d712507257c9170a0"
+	#url="http://localhost:8888/bs4",
+	#consumer_key="ck_6d2694abe7dfcfa2326c8d0f6153ed078a5923fb",
+	#consumer_secret="cs_8afd0317af477c088784b28d712507257c9170a0"
+	
+	
+	url="http://localhost:8888/bougies-parfumes-oqb.fr/",
+	consumer_key="ck_a1256f289a64e0039eee287630163b3f10af349c",
+	consumer_secret="cs_8cac616f9cb7f5031b998fb6c95151d626b4d3b1"
+	
+	
 	)	
 	return wcapi	
 
@@ -65,7 +72,7 @@ def storeProduitActif(wcapi, categorie):
 				if produit_actif.url_image_produit != "":
 		
 					print data
-					#return(wcapi.post("products", data).json())
+					return(wcapi.post("products", data).json())
 
 
 class Produit:

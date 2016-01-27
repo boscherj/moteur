@@ -229,6 +229,20 @@ def get_MagentoProductDiptyqueparis(bsObj):
 		print imgUrlSrc	
 			
 
+#---------------------------------------------------------------------------------
+#Retourne la description du produit
+#On sait ici que la page est une celle du produit - il y a un prix - un nom
+def get_MagentoProductDescription(bsObj):
+
+	#Durance
+	description=bsObj.find("div", {"class":"boxProductViewDescription"})
+	if description != None:
+		return description
+		
+		
+	return "" 
+	
+
 
 #---------------------------------------------------------------------------------
 def get_MagentoProduct(bsObj):
