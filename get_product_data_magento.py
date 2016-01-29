@@ -237,8 +237,6 @@ def get_MagentoProductDescription(bsObj):
 
 	#Durance
 	str2 = ""
-	
-	#Durance 
 	description=bsObj.find("div", {"class":"boxProductViewDescription"})
 	if description != None:
 		for x in description.findAll('span'):
@@ -247,6 +245,15 @@ def get_MagentoProductDescription(bsObj):
 			new_tag.string = str
 			x.replace_with(new_tag)
 
+		for x in description.findAll('h3'):
+			new_tag = bsObj.new_tag("br")
+			if x.string != "":
+				str="_CR_"
+			else:
+				str=x.string
+			new_tag.string = str
+			x.replace_with(new_tag)
+			
 		for x in description.findAll('p'):
 			description.p.unwrap()
 
@@ -257,38 +264,11 @@ def get_MagentoProductDescription(bsObj):
 			new_tag = bsObj.new_tag("xxx")
 			new_tag.string = "_CR_"
 			description.br.replace_with(new_tag)
-		
 			str = description.get_text()
 			str2 = str.replace("_CR_", "\n")
-			return str2
 			
-	#Esteban 
-	description=bsObj.find("div", {"class":"std"})
-	if description != None:
-		for x in description.findAll('h3'):
-			new_tag = bsObj.new_tag("br")
-			str=x.string
-			new_tag.string = str
-			x.replace_with(new_tag)
-
-		for x in description.findAll('p'):
-			description.p.unwrap()
-
-		for x in description.findAll('div'):
-			description.div.unwrap()
+		return str2 
 		
-		for x in description.findAll('br'):
-			new_tag = bsObj.new_tag("xxx")
-			if x.string != "":
-				new_tag.string = x.string
-			else:
-				new_tag.string = "_CR_"
-			
-			description.br.replace_with(new_tag)
-			str = description.get_text()
-			str2 = str.replace("_CR_", "\n")
-			return str2		
-				
 	return str2 
 	
 
