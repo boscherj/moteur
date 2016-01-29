@@ -3,8 +3,6 @@ import json
 from woocommerce import API
 import re
 
-
-
 #----------------------------------------------------------------------------------------------
 #fonction qui convertit un prix avec symbole en un nombre
 def convert_string_to_float(s):
@@ -54,7 +52,11 @@ def storeProduitActif(wcapi, categorie):
 			"price": produit_actif.prix_produit,
 			"regular_price": produit_actif.prix_ancien_produit,
 			 "sale_price": produit_actif.prix_special_produit,
-			 "description": produit_actif.url_produit,
+			 #"description": produit_actif.url_produit,
+			 "description": produit_actif.description_produit,
+			 "enable_html_description":True,
+			 "enable_html_short_description":True,
+
 			 "categories": [categorie],
 			 "images": [
 			 	{
@@ -84,6 +86,7 @@ class Produit:
 		self.prix_special_produit=None
 		self.url_image_produit=""
 		self.url_produit = ""
+		self.description_produit = ""
 	
 	def reinit(self):
 		self.nom_produit=""
@@ -92,6 +95,7 @@ class Produit:
 		self.prix_special_produit=None
 		self.url_image_produit=""
 		self.url_produit = ""
+		self.description_produit = ""
 		
 	
 		
@@ -109,6 +113,8 @@ class Produit:
 			print self.url_image_produit
 		if self.url_produit != "":
 			print self.url_produit
+		if self.description_produit != "":
+			print self.description_produit
 
 	def add_NomProduit(self, nom_produit):
 		self.nom_produit = nom_produit
@@ -125,6 +131,12 @@ class Produit:
 		self.prix_ancien_produit = convert_string_to_float(prix_ancien_produit)
 		self.prix_special_produit = convert_string_to_float(prix_special_produit)
 	
+	def add_Description_Produit(self, description):
+		self.description_produit = description
+
+			
+
+
 
 global produit_actif
 produit_actif = Produit()
