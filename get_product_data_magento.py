@@ -228,16 +228,14 @@ def get_MagentoProductDiptyqueparis(bsObj):
 	imgUrlSrc=give_MagentoProductImgURL(bsObj)
 	if imgUrlSrc!= "":
 		print imgUrlSrc	
-			
 
 #---------------------------------------------------------------------------------
 #Retourne la description du produit
 #On sait ici que la page est une celle du produit - il y a un prix - un nom
-def get_MagentoProductDescription(bsObj):
+def get_MagentoProductDescriptionExtractStr(bsObj, description):
 
 	#Durance
 	str2 = ""
-	description=bsObj.find("div", {"class":"boxProductViewDescription"})
 	if description != None:
 		for x in description.findAll('span'):
 			new_tag = bsObj.new_tag("br")
@@ -266,10 +264,39 @@ def get_MagentoProductDescription(bsObj):
 			description.br.replace_with(new_tag)
 			str = description.get_text()
 			str2 = str.replace("_CR_", "\n")
-			
-		return str2 
+			return str2
 		
-	return str2 
+		#il n'y a pas de </ br>	 c'est un div seul
+		return description.get_text()
+			
+	return str2		
+
+#---------------------------------------------------------------------------------
+#Retourne la description du produit
+#On sait ici que la page est une celle du produit - il y a un prix - un nom
+def get_MagentoProductDescription(bsObj):
+
+	#Durance
+	str = ""
+	description=bsObj.find("div", {"class":"boxProductViewDescription"})
+	if description != None:
+		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
+		return str
+	
+	#Esteban
+	#Bougies Parfums	
+	description=bsObj.find("div", {"class":"std"})
+	if description != None:
+		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
+		return str	
+	
+	#La Boîte à Bougies	
+	description=bsObj.find("div", {"id":"short_description_content"})
+	if description != None:
+		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
+		return str	
+			
+	return str 
 	
 
 
