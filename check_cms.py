@@ -64,13 +64,13 @@ def check_cms(pageUrl):
 	#Esteban : 1, 1, 34 (12 dans la nouvelle version)
 	#Scandles 8, 3, 33
 	#Yankee : 3, 1, 36 (13 http://www.bougies-parfums.fr/)
-	#Diptyque Paris : 1, 14, 37
+	#Diptyque Paris : 1, 14, 15 (15 dans la nouvelle version)
 	#Comptoir de famille : 20, 1, 38
 	#Synopsis Paris : 5, 1, 39
 	#Decos du Monde : 19, 1, 40
 	#Le Bon Marche : 17, 1, 41
 	
-	#La Boite à Bougies : 4, 2, 42
+	#La Boite à Bougies : 4, 2, 42 (14 dans la nouvelle version)
 	#Bougiz : 11, 2, 43
 	#Historiae : 7, 2, 44
 	#Geodesis : 12, 2, 45
@@ -86,7 +86,7 @@ def check_cms(pageUrl):
 	"www.lebonmarche.com", "www.sia-homefashion.fr", "www.decosdumonde.com", "www.comptoir-de-famille.com", "papillonrougeparis.com", 
 	"www.balamata.fr"]
 	cms_liste = [1, 1, 4, 1, 2, 1, 1, 2, 3, 3, 3, 2, 2, 2, 5, 2, 1, 6, 1, 1, 1, 2, 2]
-	categorie_liste = [11, 12, 48, 13, 42, 39, 1, 44, 33, 3, 3, 43, 45, 2, 37, 2, 1, 41, 1, 40, 38, 46, 47]
+	categorie_liste = [11, 12, 48, 13, 14, 39, 1, 44, 33, 3, 3, 43, 45, 2, 15, 2, 1, 41, 1, 40, 38, 46, 47]
 
 	parsed_uri = urlparse(pageUrl)	
 	check_in_list = parsed_uri.netloc in domain_liste

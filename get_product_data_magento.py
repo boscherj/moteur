@@ -230,6 +230,16 @@ def get_MagentoProductDiptyqueparis(bsObj):
 		print imgUrlSrc	
 
 #---------------------------------------------------------------------------------
+
+def removeForm(description):
+	if description.form.decompose() != None:
+		removeForm(description)
+		
+def removeScript(description):
+	if description.script.decompose() != None:
+		removeScript(description)
+				
+#---------------------------------------------------------------------------------
 #Retourne la description du produit
 #On sait ici que la page est une celle du produit - il y a un prix - un nom
 def get_MagentoProductDescriptionExtractStr(bsObj, description):
@@ -237,12 +247,26 @@ def get_MagentoProductDescriptionExtractStr(bsObj, description):
 	#Durance
 	str2 = ""
 	if description != None:
+	
+		#Pour Dyptique
+		#removeForm(description)
+		#removeScript(description)		
+		
+		for x in description.findAll('form'):
+			description.form.extract()
+			
+		for x in description.findAll('script'):
+			description.script.extract()
+	
+		for x in description.findAll('p'):
+			x.name="br"
+						
 		for x in description.findAll('span'):
 			new_tag = bsObj.new_tag("br")
 			str=x.string
 			new_tag.string = str
-			x.replace_with(new_tag)
-
+			x.replace_with(new_tag)			
+			
 		for x in description.findAll('h3'):
 			new_tag = bsObj.new_tag("br")
 			if x.string != "":
@@ -261,13 +285,14 @@ def get_MagentoProductDescriptionExtractStr(bsObj, description):
 		for x in description.findAll('br'):
 			new_tag = bsObj.new_tag("xxx")
 			new_tag.string = "_CR_"
-			description.br.replace_with(new_tag)
-			str = description.get_text()
-			str2 = str.replace("_CR_", "\n")
-			return str2
+			x.insert_after(new_tag)
+			
+		str = description.get_text()
+		str2 = str.replace("_CR_", "\n")
+		return str2
 		
 		#il n'y a pas de </ br>	 c'est un div seul
-		return description.get_text()
+		#return description.get_text()
 			
 	return str2		
 
@@ -295,7 +320,12 @@ def get_MagentoProductDescription(bsObj):
 	if description != None:
 		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
 		return str	
-			
+		
+	#Diptyque	
+	description=bsObj.find("div", {"class":"tabs-cnt"})
+	if description != None:
+		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
+		return str			
 	return str 
 	
 
@@ -308,7 +338,7 @@ def get_MagentoProduct(bsObj):
 		
 		#on teste si c'est une bougie
 		nom_produit = give_MagentoProductName(bsObj, produit)
-		if nom_produit != "":
+		if (nom_produit != "") & (nom_produit != None):
 			#print(nom_produit)
 			produit_actif.add_NomProduit(nom_produit)
 
