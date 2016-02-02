@@ -34,8 +34,8 @@ def give_WoocommerceWordpressProductName(bsObj, produit):
 	if produit_title != None:
 		nom_produit = produit_title.get_text()
 		#print nom_produit
-		if  check_est_une_bougie_WordpressProductName(bsObj):
-			return(nom_produit)
+		#if  check_est_une_bougie_WordpressProductName(bsObj):
+		return nom_produit
 			
 	return ""
 
@@ -66,12 +66,12 @@ def check_WoocommerceWordpressProductPriceSolde(bsObj):
 	old_prix = None
 	
 	allprix = bsObj.find("div", {"itemprop":"offers"})
-	if prix != None:
+	if allprix != None:
 		prix1=allprix.find("span", {"class":"amount"})
-			if prix1 != None:
-				old_prix=prix1.find_next("span", {"class":"amount"})
-				if old_prix != None:
-					return old_prix
+		if prix1 != None:
+			old_prix=prix1.find_next("span", {"class":"amount"})
+			if old_prix != None:
+				return old_prix
 	
 	return old_prix
 		

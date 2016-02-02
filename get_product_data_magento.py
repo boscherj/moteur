@@ -257,14 +257,20 @@ def get_MagentoProductDescriptionExtractStr(bsObj, description):
 			
 		for x in description.findAll('script'):
 			description.script.extract()
+		
+		#Ajout pour Diptyque	
+		for x in description.findAll('a'):
+			description.a.extract()
 	
 		for x in description.findAll('p'):
 			x.name="br"
-						
+		
+		#Modification pour la Lumiere des Fees				
 		for x in description.findAll('span'):
 			new_tag = bsObj.new_tag("br")
-			str=x.string
-			new_tag.string = str
+			if x.string != None:
+				str=x.string
+				new_tag.string = str
 			x.replace_with(new_tag)			
 			
 		for x in description.findAll('h3'):
@@ -309,7 +315,8 @@ def get_MagentoProductDescription(bsObj):
 		return str
 	
 	#Esteban
-	#Bougies Parfums	
+	#Bougies Parfums
+	#Sia	
 	description=bsObj.find("div", {"class":"std"})
 	if description != None:
 		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
@@ -325,8 +332,30 @@ def get_MagentoProductDescription(bsObj):
 	description=bsObj.find("div", {"class":"tabs-cnt"})
 	if description != None:
 		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
-		return str			
-	return str 
+		return str		
+		
+		
+	#Le Bon Marché	
+	description=bsObj.find("p", {"id":"product-description"})
+	if description != None:
+		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
+		return str		
+	
+	#Sia	
+	#Traité plus haut
+	description=bsObj.find("p", {"class":"details-p"})
+	if description != None:
+		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
+		return str	
+	
+	#La Boîte à Bougies	
+	#Traité plus haut
+	description=bsObj.find("div", {"itemprop":"description"})
+	if description != None:
+		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
+		return str	
+						
+	#return str 
 	
 
 

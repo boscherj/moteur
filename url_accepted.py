@@ -76,7 +76,9 @@ regexes2 = [ re.compile(p) for p in [ 'mailto',
                                      'lingerie',
                                      'pinterest',
                                      'p=',
-                                     'store'
+                                     'store',
+                                     'colour=',
+                                     'price='
                                      ]
               ]
     

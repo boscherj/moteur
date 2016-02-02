@@ -5,6 +5,7 @@ import re
 from bs4 import BeautifulSoup
 from check_cms import *
 from enregistrement import *
+from get_product_data_magento import *
 
 
 #---------------------------------------------------------------------------------
@@ -80,6 +81,22 @@ def check_JoomlaProductPrice(bsObj):
 	return(prixTxt, old_prixValueTxt, special_prixValueTxt)
 
 
+#---------------------------------------------------------------------------------
+#Retourne la description du produit
+#On sait ici que la page est une celle du produit - il y a un prix - un nom
+def get_JoomlaProductDescription(bsObj):
+
+	#Durance
+	str = ""
+	description=bsObj.find("div", {"id":"description"})
+	if description != None:
+		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
+		return str
+	
+						
+	#return str 
+	
+
 #---------------------------------------------------------------------------------	
 def get_JoomlaProduct(bsObj):
 
@@ -88,7 +105,7 @@ def get_JoomlaProduct(bsObj):
 	
 		#on teste si c'est une bougie
 		nom_produit = give_JoomlaProductName(bsObj, produit)
-		if nom_produit != "":
+		if (nom_produit != "") & (nom_produit != None):
 			produit_actif.add_NomProduit(nom_produit)
 			
 			print nom_produit	
@@ -103,4 +120,7 @@ def get_JoomlaProduct(bsObj):
 				if imgUrlSrc != "":
 					#print imgUrlSrc
 					produit_actif.add_UrlImageProduit(imgUrlSrc)
+					
+					description=get_JoomlaProductDescription(bsObj)
+					produit_actif.add_Description_Produit(description)
 

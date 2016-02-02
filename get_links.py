@@ -2,6 +2,7 @@
 
 import requests
 import re
+import dryscrape
 from bs4 import BeautifulSoup
 from urlparse import urlparse
 from check_cms import *
@@ -33,6 +34,18 @@ def getLinksInit(pageUrl, cms, pageUrlFormat, categorie):
 			
 	getLinks(pageUrl, wcapi, categorie)
 
+#------------------------------------------------------------------------------
+# dryscrape permet de travailler sur des fichiers qui utlisent Javascript
+# et dont le chargement complet de JS et requis avant de commencer l'analyse
+# c'est le cas de Scandles
+# Mais comme ça ralentit le traitement je ne l'utilise que lorsque c'est nécessaire
+def doit_on_utiliser_dryscrape(categorie):
+	response = False
+	if categorie == 21:
+		return True
+		
+	return response
+	
 
 #------------------------------------------------------------------------------
 
@@ -42,11 +55,17 @@ def getLinks(pageUrl, wcapi, categorie):
 	
 	print "..."
 	print pageUrl	
-			
-	html = requests.get(pageUrl) 
-	data = html.text
-	#cette page est transformee en objet bs4
-	bsObj = BeautifulSoup(data)	
+	
+	if doit_on_utiliser_dryscrape(categorie):
+		session = dryscrape.Session()
+		session.visit(pageUrl)
+		response = session.body()
+		bsObj = BeautifulSoup(response)
+	else:	
+		html = requests.get(pageUrl) 
+		data = html.text
+		#cette page est transformee en objet bs4
+		bsObj = BeautifulSoup(data)	
 	
 	getproductData(bsObj, global_cms)
 	produit_actif.add_UrlProduit(pageUrl)

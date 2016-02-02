@@ -33,7 +33,7 @@ def est_ce_une_bougie(item):
 #Le Bon Marche : 41
 
 #Joomla
-#La Lumiere Des Fées : 48
+#La Lumiere Des Fées : 22
 
 
 # ----------------------------------------------------
@@ -65,28 +65,30 @@ def check_cms(pageUrl):
 	#Scandles 8, 3, 33
 	#Yankee : 3, 1, 36 (13 http://www.bougies-parfums.fr/)
 	#Diptyque Paris : 1, 14, 15 (15 dans la nouvelle version)
-	#Comptoir de famille : 20, 1, 38
-	#Synopsis Paris : 5, 1, 39
-	#Decos du Monde : 19, 1, 40
-	#Le Bon Marche : 17, 1, 41
+	#Comptoir de famille : 20, 1, 16 (16 dans la nouvelle version)
+	#Synopsis Paris : 5, 1, 17 (17 dans la nouvelle version)
+	#Decos du Monde : 19, 1, 18 (18 dans la nouvelle version)
+	#Le Bon Marche : 17, 1, 19 (19 dans la nouvelle version)
+	#Le Bon Marche : 18, 1, 20 (20 dans la nouvelle version)
+
 	
-	#La Boite à Bougies : 4, 2, 42 (14 dans la nouvelle version)
+	#La Boite à Bougies : 4, 2, 14 (14 dans la nouvelle version)
 	#Bougiz : 11, 2, 43
 	#Historiae : 7, 2, 44
 	#Geodesis : 12, 2, 45
 	#Papillon Rouge : 21, 2, 46
 	#Balamata : 22, 2, 47 
 	
-	#Scandles : 8, 3, 33
+	#Scandles : 8, 3, 21
 	
-	#La Lumiere Des Fées : 2, 4, 48
+	#La Lumiere Des Fées : 2, 4, 22
 	
 	domain_liste = ["www.durance.fr", "www.esteban.fr", "lalumieredesfees.fr","www.bougies-parfums.fr","www.laboiteabougies.fr", "www.synopsisparis.com", "www.desfillesalavanille.com", "www.historiae.fr", "www.scandles.fr", "www.jewelcandle.fr", "www.kerzon.fr", 
 	"www.bougiz.fr", "www.geodesis.com", "decobiance.pswebshop.com", "www.diptyqueparis.fr", "www.ambiancedelamaison.fr", "www.emoi-emoi.com", 
 	"www.lebonmarche.com", "www.sia-homefashion.fr", "www.decosdumonde.com", "www.comptoir-de-famille.com", "papillonrougeparis.com", 
 	"www.balamata.fr"]
 	cms_liste = [1, 1, 4, 1, 2, 1, 1, 2, 3, 3, 3, 2, 2, 2, 5, 2, 1, 6, 1, 1, 1, 2, 2]
-	categorie_liste = [11, 12, 48, 13, 14, 39, 1, 44, 33, 3, 3, 43, 45, 2, 15, 2, 1, 41, 1, 40, 38, 46, 47]
+	categorie_liste = [11, 12, 22, 13, 14, 17, 1, 44, 21, 3, 3, 43, 45, 2, 15, 2, 1, 19, 20, 18, 16, 46, 47]
 
 	parsed_uri = urlparse(pageUrl)	
 	check_in_list = parsed_uri.netloc in domain_liste
