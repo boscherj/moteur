@@ -9,6 +9,7 @@ from check_cms import *
 from url_accepted import *
 from get_product_data import *
 from enregistrement import *
+#from tools_moteur import *
  
 
 #la liste des pages		
@@ -41,11 +42,14 @@ def getLinksInit(pageUrl, cms, pageUrlFormat, categorie):
 # Mais comme ça ralentit le traitement je ne l'utilise que lorsque c'est nécessaire
 def doit_on_utiliser_dryscrape(categorie):
 	response = False
-	if categorie == 21:
+	if (categorie == 21) :
 		return True
 		
+	if (categorie == 23) :
+		return True
+		
+			
 	return response
-	
 
 #------------------------------------------------------------------------------
 
@@ -55,6 +59,10 @@ def getLinks(pageUrl, wcapi, categorie):
 	
 	print "..."
 	print pageUrl	
+	
+	#Pour l'Occitane (accents dans les url)
+	#pageUrl = rem_accents(pageUrl)
+	#
 	
 	if doit_on_utiliser_dryscrape(categorie):
 		session = dryscrape.Session()
@@ -80,8 +88,10 @@ def getLinks(pageUrl, wcapi, categorie):
 			#si le lien n'a pas ete traite
 			if link.attrs['href'] not in pages:
 			#We have encountered a new page
+				
 				newPage = link.attrs['href'] 
 				pages.add(newPage) 
+				#print newPage
 				
 				#Pour la lumiere des fees car les URL ne sont pas completes
 				parsed_url = urlparse(newPage)

@@ -5,18 +5,19 @@ from bs4 import BeautifulSoup
 from check_cms import *
 from get_links import *
 
-#la liste des pages		
+
+# la liste des pages		
 pages = set()
-#Le type du domaine (CMS et autres infos)
+# Le type du domaine (CMS et autres infos)
 global domain_type
 
-url_etudiee = "http://lalumieredesfees.fr/"
+url_etudiee = "http://www.maisonsdumonde.com/FR/fr/decoration/bougies-f7f933a233de5a794622944afd6d24b6.htm"
 
 #on cherche le CMS du domain
 cms, categorie = check_cms(url_etudiee)
 
 #on parcourt tous les liens
-url_format = "\/bougie"
+url_format = "\/FR\/fr\/produits\/fiche\/bougie"
 
 
 getLinksInit(url_etudiee, cms, url_format, categorie)
@@ -49,3 +50,12 @@ getLinksInit(url_etudiee, cms, url_format, categorie)
 
 # http://www.scandles.fr/
 # scandles.fr
+
+# http://fr.loccitane.com
+# http:\/\/fr.loccitane.com\/bougie
+
+# https://www.bougies-la-francaise.com
+# www.bougies-la-francaise.com
+
+# http://www.maisonsdumonde.com/FR/fr/decoration/bougies-f7f933a233de5a794622944afd6d24b6.htm
+#\/*www.maisonsdumonde.com\/FR\/fr\/produits\/fiche\/bougie

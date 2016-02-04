@@ -7,10 +7,13 @@ from check_cms import *from get_product_data_magento import *
 from get_product_data_prestashop import *
 from get_product_data_joomla import *
 from get_product_data_W import *
+#from get_product_data_generic import *
+from get_product_data_generic_parameter import *
 #Pour rappel : #Magento 1
 #PrestaShop 2
 #WooCommerce 3
 #4Joomla 4
+#Generic 9
 
 	
 #---------------------------------------------------------------------------------
@@ -40,6 +43,10 @@ def getproductData(bsObj, cms):	if cms==1:
 	#Magento www.lebonmarche.com
 		#get_MagentoProductLeBonMarche(bsObj)
 		get_MagentoProduct(bsObj)
+		
+	elif cms==9:
+		#get_GenericProduct(bsObj, "bougies-la-francaise")
+		get_GenericProduct(bsObj, "maisons-du-monde")
 				
 
 	

@@ -5,7 +5,8 @@ import re
 from bs4 import BeautifulSoup
 from check_cms import *
 from enregistrement import *
-
+from get_product_data_magento import *
+ 
 
 #---------------------------------------------------------------------------------
 #on cherche l'URL de l'image
@@ -189,6 +190,21 @@ def check_PrestashopProductPrice(bsObj):
 		
 		
 		
+#---------------------------------------------------------------------------------
+#Retourne la description du produit
+#On sait ici que la page est une celle du produit - il y a un prix - un nom
+def get_PrestahopProductDescription(bsObj):
+
+	#La Boîte à Bougies
+	str = ""
+	description=bsObj.find("div", {"id":"short_description_content"})
+	if description != None:
+		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
+		return str
+	
+						
+	return str 
+	
 		
 #---------------------------------------------------------------------------------	
 def get_PrestaShopProduct(bsObj):
@@ -212,4 +228,7 @@ def get_PrestaShopProduct(bsObj):
 				if imgUrlSrc != "":
 					#print imgUrlSrc
 					produit_actif.add_UrlImageProduit(imgUrlSrc)
+					
+					description=get_PrestahopProductDescription(bsObj)
+					produit_actif.add_Description_Produit(description)
 				

@@ -8,12 +8,18 @@ import re
 def convert_string_to_float(s):
 
 	z = 0
-	if s!= None and s != "":
-		s=s.replace(",",".")
-		x=re.findall("\d+[\.?|\,?]\d+",s)
-		y=x[0]
-		z=float(y)
+	
 		
+	if s!= None and s != "":
+		if s.isdigit():
+			z=float(s)
+		else:
+			s=s.replace(",",".")
+			x=re.findall("\d+[\.?|\,?]\d+",s)
+			if len(x) >0:
+				y=x[0]
+				z=float(y)
+	
 	return z
 
 
@@ -31,6 +37,16 @@ def initBDD():
 	
 	)	
 	return wcapi	
+
+def createLinkUrlProduit(url):
+	str = ""
+	if (url != None) & (url != ""):
+		str1 = '\n<a href="'
+		str2 = '">Lien vers le site</a> \n'
+		str = str1 + url + str2
+	
+	return str
+
 
 def storeProduitActif(wcapi, categorie):
 	#Dictionaries are created using the curly braces. 
@@ -53,7 +69,7 @@ def storeProduitActif(wcapi, categorie):
 			"regular_price": produit_actif.prix_ancien_produit,
 			 "sale_price": produit_actif.prix_special_produit,
 			 #"description": produit_actif.url_produit,
-			 "description": produit_actif.description_produit,
+			 "description": createLinkUrlProduit(produit_actif.url_produit) + produit_actif.description_produit,
 			 "enable_html_description":True,
 			 "enable_html_short_description":True,
 
@@ -74,7 +90,7 @@ def storeProduitActif(wcapi, categorie):
 				if produit_actif.url_image_produit != "":
 		
 					print data
-					return(wcapi.post("products", data).json())
+					#return(wcapi.post("products", data).json())
 
 
 class Produit:

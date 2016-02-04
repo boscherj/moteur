@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup
 from check_cms import *
 from enregistrement import *
 from xml.sax.saxutils import escape
+from get_product_data_magento import *
+
 
 #---------------------------------------------------------------------------------
 #on cherche l'URL de l'image

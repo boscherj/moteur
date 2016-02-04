@@ -54,7 +54,7 @@ def est_ce_une_bougie(item):
 #Joomla 4
 #Magento Diptyque 5
 #Magento Open Graph 6 lebonmarche
-
+#Generic 9
 
 
 def check_cms(pageUrl):
@@ -80,15 +80,20 @@ def check_cms(pageUrl):
 	#Balamata : 22, 2, 47 
 	
 	#Scandles : 8, 3, 21
+	#L'Occitane : 23, 9, 23
 	
 	#La Lumiere Des Fées : 2, 4, 22
+	#Bougies La Française : 24, 9, 24
+	
+	#Maisons du Monde : 25, 9, 25
+
 	
 	domain_liste = ["www.durance.fr", "www.esteban.fr", "lalumieredesfees.fr","www.bougies-parfums.fr","www.laboiteabougies.fr", "www.synopsisparis.com", "www.desfillesalavanille.com", "www.historiae.fr", "www.scandles.fr", "www.jewelcandle.fr", "www.kerzon.fr", 
 	"www.bougiz.fr", "www.geodesis.com", "decobiance.pswebshop.com", "www.diptyqueparis.fr", "www.ambiancedelamaison.fr", "www.emoi-emoi.com", 
 	"www.lebonmarche.com", "www.sia-homefashion.fr", "www.decosdumonde.com", "www.comptoir-de-famille.com", "papillonrougeparis.com", 
-	"www.balamata.fr"]
-	cms_liste = [1, 1, 4, 1, 2, 1, 1, 2, 3, 3, 3, 2, 2, 2, 5, 2, 1, 6, 1, 1, 1, 2, 2]
-	categorie_liste = [11, 12, 22, 13, 14, 17, 1, 44, 21, 3, 3, 43, 45, 2, 15, 2, 1, 19, 20, 18, 16, 46, 47]
+	"www.balamata.fr", "fr.loccitane.com", "www.bougies-la-francaise.com", "www.maisonsdumonde.com"]
+	cms_liste = [1, 1, 4, 1, 2, 1, 1, 2, 3, 3, 3, 2, 2, 2, 5, 2, 1, 6, 1, 1, 1, 2, 2, 9, 9, 9]
+	categorie_liste = [11, 12, 22, 13, 14, 17, 1, 44, 21, 3, 3, 43, 45, 2, 15, 2, 1, 19, 20, 18, 16, 46, 47, 23, 24, 25]
 
 	parsed_uri = urlparse(pageUrl)	
 	check_in_list = parsed_uri.netloc in domain_liste
