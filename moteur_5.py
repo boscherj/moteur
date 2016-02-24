@@ -3,24 +3,26 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from check_cms import *
-from get_links import *
+from mot_get_links import *
 
+# ------------------------------------------------------------------------------------------------------------
+# CETTE VERSION EST LA GENERIQUE
+# ------------------------------------------------------------------------------------------------------------
 
 # la liste des pages		
 pages = set()
+
 # Le type du domaine (CMS et autres infos)
-global domain_type
-
-url_etudiee = "http://www.durance.fr/"
-
-#on cherche le CMS du domain
-cms, categorie = check_cms(url_etudiee)
+# global domain_type
+# url_etudiee = "http://www.maisonsdumonde.com/FR/fr/decoration/bougies-f7f933a233de5a794622944afd6d24b6.htm"
+# on cherche le CMS du domain
+# cms, categorie = check_cms(url_etudiee)
 
 #on parcourt tous les liens
-url_format = "durance.fr"
+# url_format = "\/FR\/fr\/produits\/fiche\/bougie"
 
-
-getLinksInit(url_etudiee, cms, url_format, categorie)
+# il n'y a plus qu'un seul parametre : la categorie WP du site etudié car le reste est desormais stocke dans une liste
+getLinksInit("durance")
 
 
 # http://www.durance.fr/

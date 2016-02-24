@@ -7,6 +7,10 @@ from check_cms import *
 from enregistrement import *
 from xml.sax.saxutils import escape
 from mot_generic_tools import *
+import dryscrape
+from mot_generic_tools import * 
+from urlparse import urlparse
+
 
 #---------------------------------------------------------------------------------
 #on cherche l'URL de l'image
@@ -33,21 +37,6 @@ def give_GenericProductImgURL(bsObj, site):
 
 	return ""
 
-
-#---------------------------------------------------------------------------------
-#on cherche le nom du produit 
-def give_GenericProductNameTitle(produit_title, par4):
-	print "give_GenericProductNameTitle"
-	nom_produit = ""
-	if par4 == "1":
-		print "nom_produit =" 
-		nom_produit = produit_title.get_text()
-		print nom_produit
-	else:
-		nom_produit = produit_title["content"]
-		
-	return nom_produit
-
 #---------------------------------------------------------------------------------
 #on cherche le nom du produit 
 def give_GenericProductName(bsObj, produit, site):
@@ -58,22 +47,30 @@ def give_GenericProductName(bsObj, produit, site):
 	par3 = site.check_give_GenericProductName_par3
 	
 	par4 = site.check_give_give_GenericProductName_nom_produit
-	print "Par 4"
-	print par4
-	nom_produit = ""
+	#print "Par 4"
+	#print par4
 	
-	#Ex : Durance
 	if par1=="gettext":
-		nom_produit = produit.get_text()
+		nom_produit = produit.get_text()	
 		if est_ce_une_bougie(nom_produit):
 			return(nom_produit)
-			
-	#Ex : Bougies La Française
+		else:
+			return None 
+	
+	#cas 2 - Bougies La Française
 	produit_title = bsObj.find(par1, {par2:par3})
 	if produit_title != None:
-		nom_produit = give_GenericProductNameTitle(produit_title, par4)
-				
-		if est_ce_une_bougie(nom_produit):
+		if par4 == "1":
+			print "nom_produit =" 
+			nom_produit = produit_title.get_text()
+			print nom_produit
+		#if check_est_une_bougie_Generic(bsObj):
+		else:
+			nom_produit = produit_title["content"]
+			
+		if  est_ce_une_bougie(nom_produit):
+			#print(produit_title)
+			#return(produit_title)
 			return(nom_produit)
 					
 	return nom_produit
@@ -128,6 +125,39 @@ def check_GenericProductPriceAvantSoldes(bsObj, site):
 		
 		
 	return ps
+
+# ---------------------------------------------------------------------------------
+# cherche le prix d'un produit Generic
+def check_GenericProductPriceCasComplexe_1(bsObj, site):
+
+	prixTxt = None
+	old_prixValueTxt = None
+	special_prixValueTxt = None
+	
+	ps=bsObj.find("div", {"class":"product-shop"})
+	
+	if ps != None:
+		print "prix solde"
+		print "div, class, product-shop"
+		
+		prix = ps.find("span", {"class":"regular-price"})	
+		if prix != None:
+			prixValue = prix.find("span", {"class":"price"})
+			prixTxt = prixValue.get_text()
+			
+			
+		old_prix = ps.find("p", {"class":"old-price"})	
+		if old_prix != None:
+			old_prixValue = old_prix.find("span", {"class":"price"})
+			old_prixValueTxt = old_prixValue.get_text()
+		
+		special_prix = ps.find("p", {"class":"special-price"})	
+		if special_prix != None:
+			special_prixValue = special_prix.find("span", {"class":"price"})
+			special_prixValueTxt = special_prixValue.get_text()
+			prixTxt = special_prixValueTxt 
+
+	return(prixTxt, old_prixValueTxt, special_prixValueTxt)
 		
 # ---------------------------------------------------------------------------------
 # cherche le prix d'un produit Generic
@@ -137,6 +167,11 @@ def check_GenericProductPrice(bsObj, site):
 	old_prixValueTxt = None
 	special_prixValueTxt = None
 	
+	par1 = site.check_GenericProductPriceNorma_par1
+	if par1 == "D":
+		return check_GenericProductPriceCasComplexe_1(bsObj, site)
+		
+		
 	#Cas Affiche
 	prix = check_GenericProductPriceNorma(bsObj, site)
 	if prix != None:
@@ -240,15 +275,41 @@ def get_GenericProductDescription(bsObj, site):
 	return str 
 	
 
+#------------------------------------------------------------------------------
+# dryscrape permet de travailler sur des fichiers qui utlisent Javascript
+# et dont le chargement complet de JS et requis avant de commencer l'analyse
+# c'est le cas de Scandles
+# Mais comme ça ralentit le traitement je ne l'utilise que lorsque c'est nécessaire
+def doit_on_utiliser_dryscrape(site_etudie):
+	#print "dryscrape ?"	
+	if site_etudie.dryscrape == "0":
+		return False
+	else:	
+		return False
+
+
 #---------------------------------------------------------------------------------
-def get_GenericProduct(bsObj, site_etudie):
+def get_GenericProduct(bsObj, site_etudie_par, pageUrl):
 	
-	site_etudie_par = Site()
-	site_etudie_par.creation(site_etudie)
+	#site_etudie_par = Site()
+	#site_etudie_par.creation(site_etudie)
+	UpageUrl = site_etudie_par.url_etudiee
+	Uparsed_url = urlparse(UpageUrl)
+	netloc = Uparsed_url.netloc
+	scheme = Uparsed_url.scheme
 	
-	print "get_GenericProduct 8/2/2016"	
+		
 	produit = check_GenericIsItAproduct(bsObj, site_etudie_par)
 	if produit != None: 
+	
+		if produit != None: 
+		
+			if doit_on_utiliser_dryscrape(site_etudie_par):
+				#print "dryscrape"
+				session = dryscrape.Session()
+				session.visit(pageUrl)
+				response = session.body()
+				bsObj = BeautifulSoup(response)
 		
 		#on teste si c'est une bougie
 		nom_produit = give_GenericProductName(bsObj, produit, site_etudie_par)
@@ -262,6 +323,10 @@ def get_GenericProduct(bsObj, site_etudie):
 				imgUrlSrc = give_GenericProductImgURL(bsObj, site_etudie_par)
 				if imgUrlSrc != "":
 					#print imgUrlSrc
+					parsed_url = urlparse(imgUrlSrc)
+					if parsed_url.netloc == "":
+						imgUrlSrc = scheme + "://" + netloc + imgUrlSrc
+					
 					produit_actif.add_UrlImageProduit(imgUrlSrc)
 					
 					description=get_GenericProductDescription(bsObj, site_etudie_par)

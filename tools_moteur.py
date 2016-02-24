@@ -5,6 +5,26 @@ import re
 #------------------------------------------------------------------------------
 # Pour l'Occitane qui utilise des accents dans ses URLs	
 
+#Pour Durance
+#http://stackoverflow.com/questions/2783079/how-do-i-convert-a-unicode-to-a-string-at-the-python-level
+#Autre façon de faire : 
+# s = ''.join(map(lambda x: chr(ord(x)),v))
+#ou
+# ''.join(chr(ord(c)) for c in u'Andr\xc3\xa9')
+#Les 2 marchent
+
+def from_unicode_to_utf8(u):
+	# y=u.encode('latin-1').decode('utf-8')
+	y = ''.join(map(lambda x: chr(ord(x)),u))
+	return y
+	
+	
+def put_accents(chaine):
+	y=chaine.encode('utf-8')
+	z=y.decode('utf-8').encode('latin1')
+	w=unicode(z, "utf-8")
+	return w
+
 def rem_accents(pageUrl)	:
 
 	url = pageUrl

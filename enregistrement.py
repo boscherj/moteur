@@ -2,6 +2,8 @@
 import json
 from woocommerce import API
 import re
+import io, json
+from tools_moteur import *
 
 #----------------------------------------------------------------------------------------------
 #fonction qui convertit un prix avec symbole en un nombre
@@ -48,6 +50,15 @@ def createLinkUrlProduit(url):
 	return str
 
 
+#------------------------------------------------------------------------------
+# Pour l'Occitane qui utilise des accents dans ses URLs	
+
+def put_accents(chaine):
+	y=chaine.encode('utf-8')
+	z=y.decode('utf-8').encode('latin1')
+	w=unicode(z, "utf-8")
+	return w
+
 def storeProduitActif(wcapi, categorie):
 	#Dictionaries are created using the curly braces. 
 	produit_actif.prix_ancien_produit = max(produit_actif.prix_produit, produit_actif.prix_ancien_produit)
@@ -90,7 +101,94 @@ def storeProduitActif(wcapi, categorie):
 				if produit_actif.url_image_produit != "":
 		
 					print data
+  					#data_file.write(json.dumps(data))
+  					#nom_du_produit=produit_actif.nom_produit
+  					#print "nom_du_produit"
+  					#print type(nom_du_produit)
+  					
+  					#description_du_produit = createLinkUrlProduit(produit_actif.url_produit)  + produit_actif.description_produit
+  					
+  					#pc=JsonWoocommerceProduit()
+  					#pc.create_Produit(nom_du_produit, produit_actif.prix_produit, produit_actif.prix_ancien_produit, produit_actif.prix_special_produit, description_du_produit, [categorie], produit_actif.url_image_produit)
+  					
+  					#pc.printProduit()
+  					
+  					liste_produits.ajout_ProduitListe(data)
+  					#print "Liste des produits : "
+  					#liste_produits.print_ProduitListe()
 					#return(wcapi.post("products", data).json())
+
+class JsonWoocommerceProduit:
+	'Produit Woocommerce'
+	def __init__(self):
+		self.title=""
+		self.type="simple"
+		self.price = 0
+		self.regular_price=0
+		self.sale_price=0
+		self.description = ""
+		self.enable_html_description = True
+		self.enable_html_short_description = True
+		self.categories = [0]
+		self.src = ""
+		self.position = 0
+	
+	def create_Produit(self, title, price, regular_price, sale_price, description, categories, src):
+		self.title=title
+		self.type="simple"
+		self.price = price
+		self.regular_price=regular_price
+		self.sale_price=sale_price
+		self.description = description
+		self.enable_html_description = True
+		self.enable_html_short_description = True
+		self.categories = [categories]
+		self.src = src
+		
+	def printProduit(self):
+		if self.title != "":
+			print self.title
+		if self.price != 0:
+			print self.price
+		if self.regular_price != 0:
+			print self.regular_price
+		if self.sale_price != 0:
+			print self.sale_price
+		if self.description != "":
+			print self.description
+		if self.src != "":
+			print self.src
+		print self.categories
+
+
+		
+
+class JsonWoocommerceListeProduit:
+	'Liste des Produit Woocommerce'		
+	def __init__(self):
+		self.listeDesProduits=[]
+		
+	def ajout_ProduitListe(self, produit):
+		self.listeDesProduits.append(produit)	
+		
+	def print_ProduitListe(self):
+		i = 1
+		for x in self.listeDesProduits:
+			print "produit : "
+			print i
+			i = i +1
+			x.printProduit()	
+			
+	def store_ProduitListe(self, wcapi):
+		i = 1
+		#d = {}
+		for x in self.listeDesProduits:
+			print "store produit : "
+			#d={"product":{}}
+			#d['product']=x
+			print i
+			i = i +1
+			print(wcapi.post("products", x).json())
 
 
 class Produit:
@@ -103,6 +201,7 @@ class Produit:
 		self.url_image_produit=""
 		self.url_produit = ""
 		self.description_produit = ""
+		self.categorie = 0
 	
 	def reinit(self):
 		self.nom_produit=""
@@ -112,6 +211,7 @@ class Produit:
 		self.url_image_produit=""
 		self.url_produit = ""
 		self.description_produit = ""
+		self.categorie = 0
 		
 	
 		
@@ -149,6 +249,10 @@ class Produit:
 	
 	def add_Description_Produit(self, description):
 		self.description_produit = description
+		
+	def add_Categorie_Produit(self, categorie):
+		print categorie
+		self.categorie = int(categorie)
 
 			
 
@@ -156,3 +260,12 @@ class Produit:
 
 global produit_actif
 produit_actif = Produit()
+global data_file
+data_file=open("data.txt","w")
+
+global produit_courant
+produit_courant = JsonWoocommerceProduit()
+
+global liste_produits
+liste_produits = JsonWoocommerceListeProduit()
+

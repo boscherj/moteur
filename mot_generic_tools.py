@@ -8,7 +8,7 @@
 # check_GenericProductPriceAvantSoldes_(par1..3)
 # give_GenericProductImgURL_(par1..4)
 # get_GenericProductDescription_(par1..4) si par4 ==1 alors str = description["content"], si par4==2 alors str = description.get_text()
-# dryscrape (pour savoir si JS est requis)
+# dryscrape (pour savoir si JS est requis) si 1 alors requis
 
 listes_site = {}
 
@@ -20,6 +20,7 @@ listes_site["maisons-du-monde"]="10","http://www.maisonsdumonde.com/FR/fr/decora
 
 listes_site["rigaud"]="10","http://www.bougies-rigaud.com","\/", "26", "div", "class", "price", "h1", "class", "name-product", "1", "span", "class", "product-price", "span", "class", "old_price", "div", "class", "picture", "data-src", "div", "id", "description", "2", "0"
 
+listes_site["durance"]= "10", "http://www.durance.fr/", "durance.fr", "11", "li", "class", "product", "gettext", "0", "0", "1", "D", "D", "D", "D", "D", "D", "div", "class", "product-image-gallery", "src", "div", "class", "boxProductViewDescription", "2", "1"
 
 class Site:
 	'Site en cours Analyse'

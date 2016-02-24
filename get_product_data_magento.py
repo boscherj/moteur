@@ -17,6 +17,7 @@ def give_MagentoProductImgURL(bsObj):
 	image=bsObj.find("div", {"class":"product-image-gallery"})
 	if image != None:
 		#print "Cas 1 image"
+		print "div, class, product-image-gallery"
 		imgUrlSrc = image.img['src']
 		return imgUrlSrc
 				
@@ -24,12 +25,14 @@ def give_MagentoProductImgURL(bsObj):
 	image=bsObj.find("p", {"class":"main-product-img"})
 	if image != None:
 		#print "Cas 2 image"
+		print "p, class, main-product-img"
 		imgUrlSrc = image.a["href"]
 		return imgUrlSrc
 						
 	#synopsisparis
 	image=bsObj.find("div", {"class":"product-img-box"})
 	if image != None:
+		print "div, class, product-img-box"
 		#print "Cas 3 image"
 		imgUrlSrc = image.img["src"]
 		return imgUrlSrc
@@ -37,6 +40,7 @@ def give_MagentoProductImgURL(bsObj):
 	#Diptyqueparis
 	image=bsObj.find("img", {"id":"large-image"})
 	if image != None:
+		print "img, id, large-image"
 		#print "Cas 4 image"
 		imgUrlSrc = image["src"]
 		return imgUrlSrc
@@ -44,6 +48,7 @@ def give_MagentoProductImgURL(bsObj):
 	#Le Bon Marche
 	image=bsObj.find("meta", {"property":"og:image"})
 	if image!= None:
+		print "meta, property, og:image"
 		imgUrlSrc= image["content"]	
 		return imgUrlSrc
 
@@ -53,9 +58,12 @@ def give_MagentoProductImgURL(bsObj):
 #on cherche le nom du produit 
 def give_MagentoProductName(bsObj, produit):
 
+	print "give_MagentoProductName"
+	
 	#cas 1 - par exemple Le Bon Marche
 	produit_title = bsObj.find("meta", {"property":"og:title"})
 	if produit_title != None:
+		print "meta, property, og:title"
 		nom_produit = produit_title["content"]
 		#if check_est_une_bougie_Magento(bsObj):
 		if  est_ce_une_bougie(nom_produit):
@@ -64,6 +72,7 @@ def give_MagentoProductName(bsObj, produit):
 			return(nom_produit)
 
 	if produit.h3 != None:
+		print "h3"
 		nom_produit = produit.h3.get_text()
 		#if check_est_une_bougie_Magento(bsObj):
 		if  est_ce_une_bougie(nom_produit):
@@ -72,6 +81,10 @@ def give_MagentoProductName(bsObj, produit):
 
 	else:
 		nom_produit = produit.get_text()
+		print "nom_produit = produit.get_text()"
+		#nom_produit=nom_produit.encode('utf-8')
+		#print nom_produit
+		
 		#if check_est_une_bougie_Magento(bsObj):
 		if  est_ce_une_bougie(nom_produit):
 			#print(nom_produit)
@@ -79,6 +92,7 @@ def give_MagentoProductName(bsObj, produit):
 			#on ajoute enventuellement la collection (Esteban)
 			collection = bsObj.find("span", {"class":"product-coll"})
 			if collection != None:
+				print "AJOUT : span, class, product-coll"
 				nom_produit = nom_produit + " - " + collection.get_text()	
 				
 			return(nom_produit)
@@ -90,20 +104,25 @@ def give_MagentoProductName(bsObj, produit):
 #on vérifie que c'est bien un produit 
 def check_MagentoIsItAproduct(bsObj):
 
+	print "check_MagentoIsItAproduct"
 	#cas 1 - par exemple Durance
 	produit = bsObj.find("li", {"class":"product"})
 	if produit != None: 
+		print "li, class, product"
 		return produit
 
 	#cas 2 - par exemple Diptyqueparis
 	produit = bsObj.find("div", {"class":"product-shop details details-top"})
 	if produit != None: 
+		print "div, class, product-shop details details-top"
 		return produit
 
 	#cas 3 - par exemple Le Bon Marche
 	produit = bsObj.find("meta", {"property":"og:type"})
 	if produit != None: 
+		print "meta, property, og:type"
 		if produit["content"] == "product":
+			print "content : product"
 			return produit
 
 	#ce n'est pas un produit
@@ -116,10 +135,13 @@ def check_MagentoProductPrice(bsObj):
 	prixTxt = None
 	old_prixValueTxt = None
 	special_prixValueTxt = None
+	
+	print "check_MagentoProductPrice"
 		
 	#pas de prix soldé
 	prix = bsObj.find("span", {"class":"price"})
 	if prix != None:
+		print "span, class, price"
 		prixTxt = prix.get_text()
 		#print prixTxt
 	
@@ -127,6 +149,8 @@ def check_MagentoProductPrice(bsObj):
 	else:
 		prixProduit = bsObj.find("div", {"class":"product"})
 		if prixProduit != None: 
+			print "div, class, product"
+			
 			x=bsObj.find("div", {"class":"features-holder"})
 			if x != None:
 				y=x.find("div", {"id":"candle-care-div"})
@@ -141,6 +165,9 @@ def check_MagentoProductPrice(bsObj):
 	ps=bsObj.find("div", {"class":"product-shop"})
 	
 	if ps != None:
+		print "prix solde"
+		print "div, class, product-shop"
+		
 		old_prix = ps.find("p", {"class":"old-price"})	
 		if old_prix != None:
 			old_prixValue = old_prix.find("span", {"class":"price"})
@@ -309,10 +336,13 @@ def get_MagentoProductDescriptionExtractStr(bsObj, description):
 #On sait ici que la page est une celle du produit - il y a un prix - un nom
 def get_MagentoProductDescription(bsObj):
 
+	print "get_MagentoProductDescription"
+	
 	#Durance
 	str = ""
 	description=bsObj.find("div", {"class":"boxProductViewDescription"})
 	if description != None:
+		print "div, class, boxProductViewDescription"
 		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
 		return str
 	
@@ -321,18 +351,21 @@ def get_MagentoProductDescription(bsObj):
 	#Sia	
 	description=bsObj.find("div", {"class":"std"})
 	if description != None:
+		print "div, class, std"
 		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
 		return str	
 	
 	#La Boîte à Bougies	
 	description=bsObj.find("div", {"id":"short_description_content"})
 	if description != None:
+		print "div, id, short_description_content"
 		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
 		return str	
 		
 	#Diptyque	
 	description=bsObj.find("div", {"class":"tabs-cnt"})
 	if description != None:
+		print "div, class, tabs-cnt"
 		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
 		return str		
 		
@@ -340,6 +373,7 @@ def get_MagentoProductDescription(bsObj):
 	#Le Bon Marché	
 	description=bsObj.find("p", {"id":"product-description"})
 	if description != None:
+		print "p, id, product-description"
 		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
 		return str		
 	
@@ -347,6 +381,7 @@ def get_MagentoProductDescription(bsObj):
 	#Traité plus haut
 	description=bsObj.find("p", {"class":"details-p"})
 	if description != None:
+		print "p, class, details-p"
 		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
 		return str	
 	
@@ -354,6 +389,7 @@ def get_MagentoProductDescription(bsObj):
 	#Traité plus haut
 	description=bsObj.find("div", {"itemprop":"description"})
 	if description != None:
+		print "div, itemprop, description"
 		str = get_MagentoProductDescriptionExtractStr(bsObj, description)
 		return str	
 						
