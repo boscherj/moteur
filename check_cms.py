@@ -7,19 +7,52 @@ pages = set()
 
 
 #fonction qui teste si une chaine de caracteres peut etre consideree comme une bougie
+#plusieurs mots à supprimer : voiture, batonnet, tartelette, scenterpiece...
+
 def est_ce_une_bougie(item):
-	marques_et_mots = ["rigaud","baobab","nimbus", "bahoma"]
+	marques_et_mots = ["rigaud","baobab","nimbus", "bahoma", "vranjes", "popup", "ecoya", "exclusifs", "panckoucke", "yankee candle", "jarre", "kerzon", "quintessence", "de nicola", "boule d'ambre", "boule de provence", "dl & co", "scandles", "note parisienne"]
+	mots_interdits = ["voiture","batonnet","tartelette", "scenterpiece", "accessoire", "allume", "massage", "lumignon", "lanterne", "bougeoir", "cloche en", "cloche pour", "diffuseur", "parfum d'ambiance", "bulles de savon", "coupe-meche", "encens", "personnaliser", "anniversaire", "product_compare", "galets", "flambeau", "led", "kit ", "coffret 12 bougies", "coffret 20 bougies", "4 bougies longues", "lot de 50 bougies", "photophore", "colle à bougie", "taille bougie", "sachet", "suspension", "100ml", "500ml", "500 ml", "1000ml", "vaporisateur", "camée", "ciseaux", "teignoir", "socle", "parfums bougies", "creer", "pot verre", "verre a bougie", "moule pour bougie", "pot de jardin", "parfum d’intérieur", "baume", "couvercle de", "pastille", "brule-parfum", "cire parfumee", "votive", "bougie colonne", "chauffe-plat", "12 bougies", "58x100", "78x200", "th arrondissement", "st arrondissement", "cierge", "10cm 50h", "15cm 75h", "20cm 125h", "15cm 25h", "25cm 40h", "decorative", "bougie ronde", "articielle", "stany de flamant", "elise de flamant", "brown sugar", "coffret 4 bougies", "coffret cuir + bougie", "coffret noir th", "magnolia en porcelaine", "bougie a led", "baume du tigre", "bougie led", "parfum d’intérieur", "tart parfum", "lumign", "non parfum", "dessous de bougie", "coffret bouquet royal", "recharge-boule", "calendrier", "jelly", "flamme artificielle", "stany de flamant",  "assiette", "rateur", "clip", "support jarre", "patere", "coupe a bougie"]
 	
+	for mot in mots_interdits:
+		try:
+			if item.lower().find(mot) >= 0:
+				print "Mot interdit", mot
+				return False
+		except:
+			#return False
+			#print "mot illisible"
+			kwz = 0
+				
+
 	if item.lower().find('bougie') >= 0:
 		return True
 	else:
-			for marque in marques_et_mots:
-				if item.lower().find(marque) >= 0:
-					print "Marque"
-					return True
+		for marque in marques_et_mots:
+			if item.lower().find(marque) >= 0:
+				print "Marque"
+				return True
+				
 	return False
 
 
+# ----------------------------------------------------
+def add_scheme_if_required(par_url, par_site):
+
+	pageUrl = par_site.url_etudiee
+	
+	parsed_url = urlparse(pageUrl)
+	g_netloc = parsed_url.netloc
+	g_scheme = parsed_url.scheme
+	
+	url_etudiee = urlparse(par_url)
+	if url_etudiee.netloc == "":
+		url_retour = g_scheme + "://" + g_netloc + par_url	
+	else:
+		url_retour = par_url
+			
+	return par_url
+	
+	
 # ----------------------------------------------------
 
 #Magento 
