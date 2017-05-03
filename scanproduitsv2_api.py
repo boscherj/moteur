@@ -8,6 +8,8 @@ from datetime import date, datetime, timedelta
 import mysql.connector
 from touslessites import *
 from requests_oauthlib import OAuth1
+#from lot1 import *
+
 
 # ------------------------------------------------------------------------------------------------------------
 # CHERCHE TOUS LES PRODUITS D'UNE MARQUE, LES DETRUIT - ET RESCANNE LA MARQUE

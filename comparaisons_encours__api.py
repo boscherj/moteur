@@ -56,6 +56,9 @@ def search_woocommerce_category_slug(l, nom):
 	
 # ------------------------------------------------------------------------------------------------------------
 # COMPARAISON DU PRIX EN BDD ET DU NOM LU SUR LE SITE
+# La valeur -2 est retournée si la comparaison est impossible
+# La valeur 1 est retournée si les prix sont identiques
+# Sinon la valeur retournée est 0
 # ------------------------------------------------------------------------------------------------------------	
 def comparaison_du_prix(prix_produit_en_bdd):
 	#print "prix_produit_en_bdd", prix_produit_en_bdd
@@ -135,6 +138,62 @@ def cnx_mysql():
 	cnx = mysql.connector.connect(user='jboscher', password='JBSJBSjbs1', host='localhost', port='8889', database='bougies')
 	return cnx
 
+# ------------------------------------------------------------------------------------------------------------
+# MEMORISATION DES MODIFICATIONS
+# ------------------------------------------------------------------------------------------------------------	
+def memorisation_modifications_2(produit_en_bdd, numero_serveur, numero_du_produit):
+	print "produit_en_bdd : ", produit_en_bdd
+	print "numero_serveur : ", numero_serveur
+	print "Numero :", numero_du_produit
+		
+	if produit_actif.prix_produit != None:
+		print produit_actif.prix_produit
+		
+	if produit_actif.prix_ancien_produit != None:
+		print produit_actif.prix_ancien_produit
+		
+	if produit_actif.prix_special_produit != None:
+		print produit_actif.prix_special_produit
+		
+		
+	#Recuperation de la liste des numeros des produits
+	try:
+		if numero_serveur==site_local:
+			#local
+			oauth_consumer_key = 'cL97sM96ICTc'
+			oauth_consumer_secret = 'PowjBi8BJjNQKJA0L7qKtAyfY0tC1VyPTR6H4zjfTYLLISnw'
+			oauth_token = 'WuLq1eekRj6C26tQKs6z9MhG'
+			oauth_token_secret = 'dqgskeOfbA5iQwiN30xjBdrhzL61PzkTtnIjlx2YsNUgDRDg'
+
+			url = 'http://localhost:8888/bougies-parfumes-oqb.fr/wp-json/myapiplugin/v2/memorisation/'
+
+		else:
+			#remote
+			oauth_consumer_key = '47yuehfsAgpj'
+			oauth_consumer_secret = 'ycqL7mKr6dL1ivE3Zk8yhZVNQ1oWYMaOIT74LscBU7TENXWw'
+			oauth_token = 'Q1ZFhXw644lgqcSAnHN1g5Wu'
+			oauth_token_secret = 'gOZalVUsuIl0GTFSUfSPU4uXfEoxBPE0mddQ4psjnAwXR54T'
+			url = 'http://www.les-bougies.com/wp-json/myapiplugin/v2/memorisation/'
+			
+
+	except:
+		print "Echec de Init de la BDD "
+		return False
+	
+	#Le parametre 1 indique qu'on veut la liste des numeros des produits de la categorie : categorie_du_produit
+	url=url+str(numero_du_produit)+"&"+"10&"+"11&"+"12"
+	print "URL appelee :", url
+	
+	auth = OAuth1(oauth_consumer_key, oauth_consumer_secret,oauth_token, oauth_token_secret)
+	response = requests.get(url, auth=auth)
+	#response_txt = response.text
+	# http://docs.python-requests.org/en/master/
+	response_json = response.json()
+	
+	#reponse = response_json['post']
+	#print reponse
+	
+	return response_json
 
 
 
@@ -213,7 +272,7 @@ liste_des_categories = init_woocommerce_categories()
 # FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n'
 
 
-lines = tuple(open("filename.txt", 'r'))
+# lines = tuple(open("filename.txt", 'r'))
 
 # ------------------------------------------------------------------------------------------------------------
 # COMPARAISON D'UN PRODUIT
@@ -250,8 +309,8 @@ def comparaison_du_produit(numero_du_produit, local_ou_remote):
 	#Description du produit (en BDD)	
 	try:
 		description_produit_dans_la_bdd=produit_dans_la_bdd["product"]["description"]
-		#print "Description : "
-		#print description_produit_dans_la_bdd
+		print "Description : "
+		print description_produit_dans_la_bdd
 	except:
 		print "Erreur de lecture"
 		return
@@ -290,6 +349,7 @@ def comparaison_du_produit(numero_du_produit, local_ou_remote):
 
 
 	# Puis on lit sur Internet le fichier correpondant à l'URL
+	# JE PENSE QUE CES LIGNES NE SERVENT PLUS A RIEN
 	try:
 		html = requests.get(url_produit_dans_la_bdd, headers=headers) 
 	except:
@@ -314,7 +374,8 @@ def comparaison_du_produit(numero_du_produit, local_ou_remote):
 		bsObj.noscript.extract()
 	
 
-	
+	# Lecture du produit sur le site distant
+	# get_GenericProduct retourne 1 si OK MAIS surtout met à jour la variable globale produit_actif qui contient le produit lui en remote
 	get_GenericProduct(bsObj, site_etudie, url_produit_dans_la_bdd)
 
 	print "Produit : " 
@@ -383,8 +444,7 @@ def comparaison_du_produit(numero_du_produit, local_ou_remote):
 				destruction_enregistrement_bdd(numero_du_produit, local_ou_remote)
 				#memorisation_modifications(cnx, produit_dans_la_bdd, 5)
 
-				
-				
+			
 			produit_actif.reinit()
 
 	
@@ -396,10 +456,11 @@ def comparaison_du_produit(numero_du_produit, local_ou_remote):
 		destruction_enregistrement_bdd(numero_du_produit, local_ou_remote)
 		
 		#memorisation_modifications(cnx, produit_dans_la_bdd, 3)
-		
-		print "DELETE Titre different :  "
-	
+		#print memorisation_modifications_2(produit_dans_la_bdd, local_ou_remote)
+		#print "DELETE Titre different :  "
 
+	print "NUMERO _du_produit : ", numero_du_produit
+	print memorisation_modifications_2(produit_dans_la_bdd, local_ou_remote, numero_du_produit)	
 
 # ------------------------------------------------------------------------------------------------------------
 # COMPARE LES PRODUITS D'UNE MARQUE EN BDD REMOTE AVEC LA VERSION DU SITE MARCHAND
@@ -479,18 +540,20 @@ def comparaison_produits_categorie(nom_de_la_marque):
 
 	try:
 		print "en local : "
-		#id_produits = comparaison_produits(nom_de_la_marque, site_local)
-		#print id_produits
-		#parcours_liste(id_produits, site_local)
+		# La fonction comparaison_produits retourne la liste des enregistrements de la categorie
+		id_produits = comparaison_produits(nom_de_la_marque, site_local)
+		print id_produits
+		parcours_liste(id_produits, site_local)
 		
 	except:
 		print "Echec de suppression_produits_categorie local"
 	
 	try:
 		print "en remote : "
-		id_produits = comparaison_produits(nom_de_la_marque, site_remote)
-		print id_produits
-		parcours_liste(id_produits, site_remote)
+		# La fonction comparaison_produits retourne la liste des enregistrements de la categorie
+		#id_produits = comparaison_produits(nom_de_la_marque, site_remote)
+		#print id_produits
+		#parcours_liste(id_produits, site_remote)
 		
 	except:
 		print "Echec de suppression_produits_categorie remote"
@@ -506,7 +569,7 @@ print "Longueur de la liste", longueur_cat
 while i < longueur_cat:
 	comparaison_produits_categorie(liste_categories_0[i])
 	#liste_produits.store_ProduitListe(wcapi)
-	liste_produits.store_ProduitListe(wcapi2)
+	#liste_produits.store_ProduitListe(wcapi2)
 	liste_produits.vide_ProduitListe()
 	i = i +1
 

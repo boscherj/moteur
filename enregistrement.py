@@ -2,7 +2,7 @@
 import json
 from woocommerce import API
 import re
-import io, json
+import io
 from tools_moteur import *
 import urllib
 import os
@@ -94,7 +94,7 @@ def initBDD_2():
 	#Ajoute suite a qq problemes avec tendances du monde
 	#JBS le 13/12/2016 - upgrade du package woocommerce python et ajout des lignes ci-dessous
 	wp_api=True, 
-	version="wc/v1"
+	version="wc/v2"
 	)	
 	return wcapi	
 	
@@ -129,7 +129,7 @@ def initBDDremote_2():
 	timeout=30,
 	#JBS le 13/12/2016 - upgrade du package woocommerce python et ajout des lignes ci-dessous
 	wp_api=True, 
-	version="wc/v1"
+	version="wc/v2"
 	)	
 	return wcapi2	
 
@@ -137,7 +137,7 @@ def initBDDremote_2():
 # CHECK SI ON ANALYSE POUR LE LOCAL
 # ------------------------------------------------------------------------------------------------------------	
 def check_si_traitement_local(wcapi):
-	return (wcapi.url=="http://localhost:8888/bougies-parfumes-oqb.frg/")
+	return (wcapi.url=="http://localhost:8888/bougies-parfumes-oqb.fr/")
 
 	
 	
@@ -260,12 +260,12 @@ def stockage_image_en_remote():
 	# Recuperation de l'image sur le site explore (on effectue la requete en local)
 	# Stockage en local de l'image
 	# dir_local='tmpimages/'+f
-	dir_local='tmpimages/'+"avirer"
-	
-	print "Dossier image locale : ", dir_local
-	
+		
 	response = requests.get(u)
 	img = Image.open(StringIO(response.content))
+	dir_local = 'tmpimages/'+"avirer."+img.format
+	print "Dossier image locale : ", dir_local
+	
 	img.save(dir_local)
 	
 	
@@ -330,17 +330,19 @@ def storeProduitActif(wcapi, categorie):
 
 	if (categorie == '28') or (categorie == '156') :
 		print "La categorie est : ", categorie
-		# Si on enregistrement en local
+		# Si on enregistre en local
 		if check_si_traitement_local(wcapi):
 			stockage_image_en_remote() 
 		# Si on enregistre en remote
 		else:
-			print "Enregistrement en remote : image : ", 
+			print "Enregistrement en remote : image : "
 			produit_actif.url_image_produit = change_url_image_produit()
-			print "Enregistrement en remote : image : ",
 							
 							
 	data = {}
+	
+	# pour la version legacy de BS 4
+	'''
 	data = {
 		"product": {
 			"title": produit_actif.nom_produit,
@@ -363,6 +365,36 @@ def storeProduitActif(wcapi, categorie):
 			 	}
 			 ]
 		}
+	}
+	'''
+	
+	# Pour BS 4 v3.0
+	# JBS le 7/4/2017
+	data = {
+		# "title": produit_actif.nom_produit,
+		"name": produit_actif.nom_produit,
+		"type": "simple",
+		#"price": produit_actif.prix_produit,
+		"regular_price": str(produit_actif.prix_ancien_produit),
+		"sale_price": str(produit_actif.prix_special_produit),
+		#"description": produit_actif.url_produit,
+		"description": createLinkUrlProduit(produit_actif.url_produit) + produit_actif.description_produit,
+		"enable_html_description":True,
+		"enable_html_short_description":True,
+
+		"categories": [
+			{
+				"id": categorie
+			}
+		],
+		
+		"images": [
+			{
+			 	"src": produit_actif.url_image_produit,
+			 	#"src": "http://www.scandles.fr/wp-content/uploads/2015/10/bougie-black_trompette_anges_10oz-510x600.jpg",
+			 	"position": 0
+			 }
+		]
 	}
 	
 	#On ne stocke que s'il y a un nom, une URL, une image et un prix
@@ -440,8 +472,9 @@ class JsonWoocommerceListeProduit:
 		self.nomDesProduits=[]
 		
 	def ajout_ProduitListe(self, produit):
-		titre_du_produit = produit["product"]["title"]
-		#titre_du_produit = produit["product"]["name"]
+		# pour la version BS4 v3
+		titre_du_produit = produit["name"]
+		#titre_du_produit = produit["product"]["title"]
 		longeur_de_la_liste = len(self.nomDesProduits)
 		deja_dans_la_liste = False
 		

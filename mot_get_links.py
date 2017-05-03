@@ -229,13 +229,15 @@ def getLinksInit(site):
 		
 	global_regexes = re.compile(pageUrlFormat)
 	
-	
-	wcapi = initBDD()	
+	# Version JBS le 7/4/2017
+	wcapi = initBDD_2()	
+	#wcapi = initBDD()	
 	#init_Global()
 	print "wcapi", wcapi
 	
 	#wcapi2 = initBDDremote_2() pour la nlle version Woocommerce API REST
-	wcapi2 = initBDDremote()
+	wcapi2 = initBDDremote_2()
+	#wcapi2 = initBDDremote()
 	print "wcapi2", wcapi2
 
 	
@@ -251,6 +253,9 @@ def getLinksInit(site):
 
 	
 	print "pageUrl", pageUrl
+	# Rempalcer wcapi par wcapi2 lorsqu'on fait Historiae/Ejea
+	# La procédure est la suivante : d'abord exécuter le soft en local (pour le stockage des images) puis en remote en changeant wcapi par wcapi2
+	# Le mieux, c'est de faire successivement Historiae/Ejea en local puis en remote
 	getLinks(pageUrl, wcapi, site_etudie)
 	
 	#liste_produits.print_ProduitListe()
@@ -266,7 +271,7 @@ def getLinksInit(site):
 	# Enregistrement en remote
 	try:
 		print "Enregistrement en remote"
-		liste_produits.store_ProduitListe(wcapi2)
+		#liste_produits.store_ProduitListe(wcapi2)
 	except:
 		print "Pb de stockage remote"
 	
@@ -364,15 +369,15 @@ def getLinks(pageUrl, wcapi, site_etudie):
 	#print bsObj
 	
 	#print "get_GenericProduct"
-	get_GenericProduct(bsObj, site_etudie, pageUrl)
+	if get_GenericProduct(bsObj, site_etudie, pageUrl):
 	
+		print "PageUrl :", pageUrl
+		produit_actif.add_UrlProduit(pageUrl)
 	
-	produit_actif.add_UrlProduit(pageUrl)
-	
-	categorie=site_etudie.categorie
-	produit_actif.add_Categorie_Produit(categorie)
-	#produit_actif.printProduit()
-	storeProduitActif(wcapi, categorie)
+		categorie=site_etudie.categorie
+		produit_actif.add_Categorie_Produit(categorie)
+		#produit_actif.printProduit()
+		storeProduitActif(wcapi, categorie)
 		
 	produit_actif.reinit()
 	
