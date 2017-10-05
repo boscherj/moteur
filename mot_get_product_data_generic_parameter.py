@@ -10,7 +10,6 @@ from mot_generic_tools import *
 import dryscrape
 from urlparse import urlparse
 
-
 #---------------------------------------------------------------------------------
 #on cherche l'URL de l'image
 def give_GenericProductImgURL(bsObj, site):
@@ -45,6 +44,8 @@ def give_GenericProductImgURL(bsObj, site):
 			imgUrlSrc = image["content"]
 		elif par4=="data-src":
 			imgUrlSrc = image["data-src"]
+		elif par4=="bon-marche":
+			imgUrlSrc = image.picture.img["src"]
 			
 		#Ajout JBS le 2/6/2016 
 		elif par4=="gettxt":
@@ -182,7 +183,7 @@ def give_GenericProductName(bsObj, produit, site):
 			#Pour Premiere Avenue
 			#JBS le 31/10/2016
 			#breadcrumb = bsObj.find("nav", {"class":"woocommerce-breadcrumb"})
-			breadcrumb = bsObj.find("h2", {"id":"desc-du-produit"})
+			breadcrumb = bsObj.find("div", {"class":"ariane"})
 			
 			if breadcrumb!=None:
 				breadcrumbTxt = breadcrumb.get_text()
@@ -295,6 +296,8 @@ def check_GenericIsItAproduct(bsObj, site):
 	par2 = site.check_GenericIsItAproduct_par2
 	par3 = site.check_GenericIsItAproduct_par3
 
+	#print "par1, par2, par3 : ", par1,par2,par3
+	
 	produit = bsObj.find(par1, {par2:par3})
 	if produit != None: 
 		return produit
@@ -592,13 +595,9 @@ def check_GenericProductPriceCasConranShop(bsObj, site):
 	old_prixValueTxt = None
 	special_prixValueTxt = None
 	
-	metaPrix = bsObj.find("div", {"class":"product-shop"}) 
-	if metaPrix==None:
-		return(prixTxt, old_prixValueTxt, special_prixValueTxt)
-		
 	
 	#Prix sans soldes
-	prixBox = metaPrix.find("div", {"class":"price-box"})	
+	prixBox = bsObj.find("div", {"id":"price-info-grouped"})	
 	if prixBox!=None:
 		prix = prixBox.find("span", {"class":"regular-price"})
 		if prix!=None:
@@ -660,26 +659,26 @@ def check_GenericProductPricePremiereAvenue(bsObj, site):
 	special_prixValueTxt = None
 	
 	#Prix sans soldes
-	prixBox = bsObj.find("div", {"id":"bloc_produit_details"})	
+	prixBox = bsObj.find("p", {"class":"product__price"})	
 	
 	
 	if prixBox!=None:
-		prix = prixBox.find("p", {"id":"prix_produit"})
-		if prix!=None:
-			prixTxt = prix.get_text()
-			
-		else:
-			special_price = prixBox.find("p", {"id":"prix_promo"})	
+		
+		special_price = prixBox.find("span", {"class":"price--new"})	
 				
-			if special_price != None:
-				special_prixValueTxt = special_price.get_text()
-				prixTxt = special_prixValueTxt
+		if special_price != None:
+			special_prixValueTxt = special_price.get_text()
+			prixTxt = special_prixValueTxt
 		
-			old_prix = prixBox.find("p", {"id":"old_prix_produit"})
-			if old_prix != None:
-				old_prixValueTxt = old_prix.get_text()
+		old_prix = prixBox.find("span", {"class":"price--old"})
+		if old_prix != None:
+			old_prixValueTxt = old_prix.get_text()
 		
-
+		if special_price == None:
+			prix = prixBox.find("span", {"itemprop":"price"})
+			if prix!=None:
+				prixTxt = prix.get_text()
+					
 	return(prixTxt, old_prixValueTxt, special_prixValueTxt)
 
 
@@ -929,6 +928,44 @@ def check_GenericProductPriceHypsoe(bsObj, site, classprice):
 	return(prixTxt, old_prixValueTxt, special_prixValueTxt)		
 
 
+# ---------------------------------------------------------------------------------
+# cherche le prix d'un produit Nose
+
+def check_GenericProductPriceNose(bsObj, site):
+
+	# Le prix est scindé en une partie entière et une partie décimale
+	# sale_price : Product sale price
+	# regular_price : Product regular price
+
+	prixTxt = None
+	old_prixValueTxt = None
+	special_prixValueTxt = None
+	
+	#Prix sans soldes
+	#prix = bsObj.find("div", {"class":"price-box"})	
+	prix = bsObj.find("ul", {"class":"productIds"})
+	if prix!=None:
+		p = prix.find("span", {"class":"price"})
+		if p!=None:
+			prixTxt = p.get_text()
+			
+		#soldes=prix.find("del")		
+		#if soldes!=None:
+			#old_prixValueTxt = soldes.get_text()
+			#JBS le 16/5/2016 mise en commentaires
+			#special_prixValueTxt = old_prixValueTxt
+			
+		#nouveauprix=prix.find("ins")
+		#if nouveauprix != None:	
+			#prixTxt = nouveauprix.get_text()
+			#JBS le 16/5/2016 ajout
+			#special_prixValueTxt = prixTxt
+
+
+	#print prixTxt, old_prixValueTxt, special_prixValueTxt
+	return(prixTxt, old_prixValueTxt, special_prixValueTxt)		
+
+
 	
 # ---------------------------------------------------------------------------------
 # cherche le prix d'un produit Generic
@@ -999,6 +1036,8 @@ def check_GenericProductPrice(bsObj, site):
 	if par1 == "mise-en-scene":	
 		return check_GenericProductPriceCasMiseEnScene(bsObj, site)
 				
+	if par1 == "nose":	
+		return check_GenericProductPriceNose(bsObj, site)
 
 		
 			
@@ -1166,37 +1205,27 @@ def doit_on_utiliser_dryscrape(site_etudie):
 #---------------------------------------------------------------------------------
 def get_GenericProduct(bsObj, site_etudie_par, pageUrl):
 	
-	
-	#print "get_GenericProduct", site_etudie_par, pageUrl
+	#Le Paramètre pageUrl ne semble pas être utilisé
 	
 	UpageUrl = site_etudie_par.url_etudiee
 	Uparsed_url = urlparse(UpageUrl)
 	netloc = Uparsed_url.netloc
 	scheme = Uparsed_url.scheme
 	
+	#print "UpageUrl : ", UpageUrl
+	#print "Uparsed_url : ", Uparsed_url
+	#print  bsObj
+	
+	# Si c'est OK on retourne 1 sinon 0
+	response = 0
 		
-	produit = check_GenericIsItAproduct(bsObj, site_etudie_par)
-	#print "produit", produit
+	produit = check_GenericIsItAproduct(bsObj, site_etudie_par)				
 	if produit != None: 
 	
-		#JBS le 6/5/2016
-		#if produit != None: 
-		
-		#Changement JBS le 6/10/2016
-		#if doit_on_utiliser_dryscrape(site_etudie_par):
-			#print "dryscrape"
-			#session = dryscrape.Session()
-				
-			#try:
-				#session.visit(pageUrl)
-				#response = session.body()
-				#bsObj = BeautifulSoup(response)
-			#except:
-				#print "Erreur"
-				#return
-		
 		#on teste si c'est une bougie
 		nom_produit = give_GenericProductName(bsObj, produit, site_etudie_par)
+		#print "Le nom du produit dans get_GenericProduct est : ", nom_produit
+		
 		if (nom_produit != "") & (nom_produit != None):
 			#print(nom_produit)
 			produit_actif.add_NomProduit(nom_produit)
@@ -1241,3 +1270,6 @@ def get_GenericProduct(bsObj, site_etudie_par, pageUrl):
 					#print description
 					produit_actif.add_Description_Produit(description)
 			
+					response = 1
+
+	return response

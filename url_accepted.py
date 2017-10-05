@@ -97,7 +97,7 @@ regexes2 = [ re.compile(p) for p in [ 'mailto',
                                      'bougies-non-parfumees.html?',
                                      #'bougies-parfumees.html?',
                                      'brand=',
-                                     'color=', #82
+                                     #'color=', #82
                                      'cat=',
                                      'scent=',
                                      'family=',
@@ -175,15 +175,20 @@ regexes2 = [ re.compile(p) for p in [ 'mailto',
                                      'tablette',
                                      'jelly',
                                      'etui',
-                                     'flamme-artificielle',
+                                     'flamme-artificielle', #155
                                      'sort-by',
                                      'chiffre',
-                                     #'galet',
                                      'football',
                                      'assiette',
                                      'coupe a',
                                      'pots-pour',
-                                     'parfums_theme_yankee'
+                                     'parfums_theme_yankee',
+                                     'rechaud',
+                                     #'fumeur', #156
+                                     'spray',
+                                     'les-news',
+                                     'scented',
+                                     'extrait'
                                      ]
               ]
     

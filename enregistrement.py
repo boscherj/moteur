@@ -11,7 +11,65 @@ import paramiko
 from PIL import Image
 import requests
 from StringIO import StringIO
+import os
 
+#----------------------------------------------------------------------------------------------
+# Fonction qui essaie d'enregistrer le produit lorsqu'il y a eu échec à cause de l'image
+# JBS le 5/10/2017
+def enregistrement2meChance(w, x, wcapi):
+
+	print w['code']
+					
+	# Erreur de lecture 
+	# En cours de révision
+	if ( w['code']=="woocommerce_product_image_upload_error") :
+		print "Dans le cas : woocommerce_product_image_upload_error" 
+		img=x["images"][0]["src"]
+		print img
+				
+		img2 = requests_my_image(img)
+		print "Fichier image : ", img2
+		if ( img2 != False) :
+			x["images"][0]["src"] = img2
+			print x
+			w = wcapi.post("products", x).json()
+
+	return
+
+#----------------------------------------------------------------------------------------------
+# Fonction qui lit une image dont on a l'URL et la sauvegarde dans le dossier
+# Voir : https://gist.github.com/hanleybrand/4221658
+# JBS le 27/9/2017
+
+def requests_my_image(file_url):
+
+	print "requests_my_image" 
+	suffix_list = ['jpg', 'gif', 'png', 'tif', 'svg']
+	d="/Applications/MAMP/htdocs/bougies-parfumes-oqb.fr/tmp/"
+	h="http://localhost:8888/bougies-parfumes-oqb.fr/tmp/"
+	
+	file_name =  urlparse(file_url)[2].split('/')[-1]
+	print "File Name : ", file_name
+	
+	file_suffix = file_name.split('.')[1]
+	print "File Suffix : ", file_suffix
+    
+    # Je veux un seul nom de fichier image, toujours le même
+    #file_name = "tmp"+"."+ file_suffix
+    
+	i = requests.get(file_url)
+	print "i = ",i
+    
+	d_file_name=d+file_name
+    
+	if file_suffix in suffix_list and i.status_code == requests.codes.ok:
+		with open(d_file_name, 'wb') as file:
+			file.write(i.content)
+			return(h+file_name)
+ 	
+	else:
+ 		return False
+        
 
 #----------------------------------------------------------------------------------------------
 #fonction qui convertit un prix avec symbole en un nombre
@@ -24,6 +82,14 @@ def convert_string_to_float(s):
 		if s.isdigit():
 			z=float(s)
 		else:
+		
+			#JBS le 19/9/2017
+			#cas particulier de la FNAC
+			if type(s) == type(unicode()):
+				t=s.encode('utf8')
+				#On supprime Euro si ça existe
+				s=t.replace("\xe2\x82\xac",",")
+			
 			#JBS le 2/12/2016
 			#cas particulier où on a un prix de la forme 1.490,00 €					
 			virguletpoint=re.search("(\d)+,(\d)+.(\d)+",s)
@@ -295,6 +361,24 @@ def change_url_image_produit():
 	
 
 
+# ------------------------------------------------------------------------------------------------------------
+# CHANGE_URL_IMAGE_PRODUIT_HTTPS_HTTP
+#
+# ------------------------------------------------------------------------------------------------------------
+# On est dans le cas tendances-du-monde
+# L'image indiquée est en HTTP mais il y a un moved permanently en HTTPS
+
+def change_url_image_produit_https_http():
+
+	u=produit_actif.url_image_produit
+	print "URL origine", u
+	parsed_url = urlparse(u)
+	
+	newurl= "https"+"://"+parsed_url.netloc+parsed_url.path+parsed_url.params+parsed_url.query+parsed_url.fragment
+	print "Nouvelle URL Image : ", newurl
+	return newurl
+	
+	
 
 # ------------------------------------------------------------------------------------------------------------
 # STORE_PRODUIT_ACTIF
@@ -328,6 +412,7 @@ def storeProduitActif(wcapi, categorie):
 	# Je me deboruille de la façon suivante :
 	# Je lis en local, je stocke l'image en remote et lorsque je lis en remote je prends l'image stockee lors de la lecture en local
 
+		
 	if (categorie == '28') or (categorie == '156') :
 		print "La categorie est : ", categorie
 		# Si on enregistre en local
@@ -337,11 +422,20 @@ def storeProduitActif(wcapi, categorie):
 		else:
 			print "Enregistrement en remote : image : "
 			produit_actif.url_image_produit = change_url_image_produit()
-							
-							
+	
+	# tendances-du-monde
+	# ça ne suffit pas de rempalcer http par https
+	# j'ai toujours l'erreur woocommerce_product_image_upload_error
+	
+	# if (categorie == '186') :						
+		# produit_actif.url_image_produit = change_url_image_produit_https_http()
+		
+								
 	data = {}
 	
 	# pour la version legacy de BS 4
+	# Version OBSOLETE
+	
 	'''
 	data = {
 		"product": {
@@ -410,6 +504,102 @@ def storeProduitActif(wcapi, categorie):
 
 
 
+
+
+# ------------------------------------------------------------------------------------------------------------
+# MAJ_PRODUIT_ACTIF
+# ------------------------------------------------------------------------------------------------------------	
+# Exemple de data pour la nouvelle version de l'API REST Woocommerce 
+# {'description': 'Un subtil parfum de pamplemousse', 'regular_price': '45.0', 
+# 'short_description': 'Bougie Parfumee Platinum Max One Baobab', 
+# 'images': [{
+	#'src': 'http://cdn.mise-en-scene.com/media/catalog/product/cache/4/image/363x/040ec09b1e35df139433887a97daa66f/b/o/bougie_parfum_e_max_one_platinum_baobab_collection.jpg', 
+	#'position': 0}], 
+# 'type': 'simple', 
+#'categories': [{'id': 116}], 
+# 'name': 'Bougie Parfumee Platinum Max One Baobab - Mise en scene Belgique'}
+
+
+def majProduitActif(wcapi, categorie, numero_du_produit):
+	#Dictionaries are created using the curly braces. 
+	produit_actif.prix_ancien_produit = max(produit_actif.prix_produit, produit_actif.prix_ancien_produit)
+	
+	
+	if produit_actif.prix_special_produit == 0:
+		produit_actif.prix_special_produit = None
+	#ce n'est pas soldé dans ce cas
+	if produit_actif.prix_special_produit == produit_actif.prix_ancien_produit:
+		produit_actif.prix_special_produit = None	
+		
+	#JBS le 17/3/2017
+	# Cas particulier Historiae (28) et Ejea (156)
+	# Ces sites refusent les robots - mon IP est interdite
+	# Par contre en accedant à partir de mon local c'est OK
+	# Je me deboruille de la façon suivante :
+	# Je lis en local, je stocke l'image en remote et lorsque je lis en remote je prends l'image stockee lors de la lecture en local
+
+	if (categorie == '28') or (categorie == '156') :
+		print "La categorie est : ", categorie
+		# Si on enregistre en local
+		if check_si_traitement_local(wcapi):
+			stockage_image_en_remote() 
+		# Si on enregistre en remote
+		else:
+			print "Enregistrement en remote : image : "
+			produit_actif.url_image_produit = change_url_image_produit()
+
+
+	# Cas Le Bazaristain - JBS le 26/9/2017					
+	#if (categorie == '92') :
+		#print "Le Bazaristain "
+		#img = requests_image(file_url) 
+		#if (img != False) :
+			#print "Image : ", img
+			#produit_actif.url_image_produit = img	
+							
+	data = {}
+	
+	# pour la version legacy de BS 4
+	
+	# Pour BS 4 v3.0
+	# JBS le 7/4/2017
+	data = {
+		# title n'existe pas dans la version de cette API
+		# "title": produit_actif.nom_produit,
+		# Le nom reste le même
+		#"name": produit_actif.nom_produit,
+		# type ne sert pas
+		#"type": "simple",
+		#"price": produit_actif.prix_produit,
+		"regular_price": str(produit_actif.prix_ancien_produit),
+		"sale_price": str(produit_actif.prix_special_produit),
+		#"description": produit_actif.url_produit,
+		# si la description change on supprime
+		#"description": createLinkUrlProduit(produit_actif.url_produit) + produit_actif.description_produit,
+		#"enable_html_description":True,
+		#"enable_html_short_description":True,
+
+		#"categories": [
+			#{
+				#"id": categorie
+			#}
+		#],
+		
+		#"images": [
+			#{
+			 	#"src": produit_actif.url_image_produit,
+			 	#"src": "http://www.scandles.fr/wp-content/uploads/2015/10/bougie-black_trompette_anges_10oz-510x600.jpg",
+			 	#"position": 0
+			# }
+		#]
+	}
+	
+	x1="products/"
+	y1=str(numero_du_produit)
+	z1=x1+y1
+	
+	print "MAJ du Produit : ", numero_du_produit
+	print(wcapi.put(z1, data).json())
 
 
 # ------------------------------------------------------------------------------------------------------------
@@ -508,18 +698,8 @@ class JsonWoocommerceListeProduit:
 			print i
 			i = i +1
 			print x
+			w = wcapi.post("products", x).json()
 			
-			try:
-				print(wcapi.post("products", x).json())
-			except requests.Timeout as err:
-				print "Timeout Erreur"
-				print err
-				return
-			except requests.RequestException as err:
-				print "Exception Erreur"
-				print err
-				return
-				
 		return
 				
 				

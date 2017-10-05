@@ -264,14 +264,14 @@ def getLinksInit(site):
 	# Enregistrement en local
 	try:
 		print "Enregistrement en local"
-		liste_produits.store_ProduitListe(wcapi)
+		#liste_produits.store_ProduitListe(wcapi)
 	except:
 		print "Pb de stockage local"
 	
 	# Enregistrement en remote
 	try:
 		print "Enregistrement en remote"
-		#liste_produits.store_ProduitListe(wcapi2)
+		liste_produits.store_ProduitListe(wcapi2)
 	except:
 		print "Pb de stockage remote"
 	

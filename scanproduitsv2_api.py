@@ -7,7 +7,8 @@ from mot_get_links import *
 from datetime import date, datetime, timedelta
 import mysql.connector
 from touslessites import *
-from requests_oauthlib import OAuth1
+#from requests_oauthlib import OAuth1
+from oauth_les_bougies import *
 #from lot1 import *
 
 
@@ -30,19 +31,19 @@ def suppression_produits_categorie(nom_de_la_marque, numero_serveur):
 	try:
 		if numero_serveur==1:
 			#local
-			oauth_consumer_key = 'cL97sM96ICTc'
-			oauth_consumer_secret = 'PowjBi8BJjNQKJA0L7qKtAyfY0tC1VyPTR6H4zjfTYLLISnw'
-			oauth_token = 'WuLq1eekRj6C26tQKs6z9MhG'
-			oauth_token_secret = 'dqgskeOfbA5iQwiN30xjBdrhzL61PzkTtnIjlx2YsNUgDRDg'
+			#oauth_consumer_key = 'cL97sM96ICTc'
+			#oauth_consumer_secret = 'PowjBi8BJjNQKJA0L7qKtAyfY0tC1VyPTR6H4zjfTYLLISnw'
+			#oauth_token = 'WuLq1eekRj6C26tQKs6z9MhG'
+			#oauth_token_secret = 'dqgskeOfbA5iQwiN30xjBdrhzL61PzkTtnIjlx2YsNUgDRDg'
 
 			url = 'http://localhost:8888/bougies-parfumes-oqb.fr/wp-json/myapiplugin/v2/greeting/'
 
 		else:
 			#remote
-			oauth_consumer_key = '47yuehfsAgpj'
-			oauth_consumer_secret = 'ycqL7mKr6dL1ivE3Zk8yhZVNQ1oWYMaOIT74LscBU7TENXWw'
-			oauth_token = 'Q1ZFhXw644lgqcSAnHN1g5Wu'
-			oauth_token_secret = 'gOZalVUsuIl0GTFSUfSPU4uXfEoxBPE0mddQ4psjnAwXR54T'
+			#oauth_consumer_key = '47yuehfsAgpj'
+			#oauth_consumer_secret = 'ycqL7mKr6dL1ivE3Zk8yhZVNQ1oWYMaOIT74LscBU7TENXWw'
+			#oauth_token = 'DgHswn4Sr7RzGBtmtWVgqCJZ'
+			#oauth_token_secret = 'zDtKFy60uyb2TA5j4B5VkWMTDEvC4TO4XlBoCCtnofY9qRfK'
 			url = 'http://www.les-bougies.com/wp-json/myapiplugin/v2/greeting/'
 			
 
@@ -52,8 +53,10 @@ def suppression_produits_categorie(nom_de_la_marque, numero_serveur):
 	
 	url=url+"100769/"+categorie_du_produit
 	
-	auth = OAuth1(oauth_consumer_key, oauth_consumer_secret,oauth_token, oauth_token_secret)
-	response = requests.get(url, auth=auth)
+	#auth = OAuth1(oauth_consumer_key, oauth_consumer_secret,oauth_token, oauth_token_secret)
+	auth1 = getOauth1(numero_serveur)
+	
+	response = requests.get(url, auth=auth1)
 	print(response.text)
 	return response
 
@@ -65,7 +68,7 @@ def suppression_et_ajout_produits_categorie(nom_de_la_marque):
 
 	try:
 		print "en local : "
-		suppression_produits_categorie(nom_de_la_marque, 1)
+		#suppression_produits_categorie(nom_de_la_marque, 1)
 	except:
 		print "Echec de suppression_produits_categorie local"
 	
